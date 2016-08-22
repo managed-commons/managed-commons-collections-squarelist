@@ -55,7 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Commons.Collections.SquareList\Commons.Collections.SquareList.csproj">
-      <Project>{bbb83e26-6158-493b-b0b1-a35972c22b74}</Project>
+      <Project>{1be4d86b-f460-4104-8cdd-494027fc7852}</Project>
       <Name>Commons.Collections.SquareList</Name>
     </ProjectReference>
   </ItemGroup>

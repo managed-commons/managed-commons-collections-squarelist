@@ -1,24 +1,51 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Commons.Collections;
+using System.Linq;
 
 namespace UnitTests
 {
     [TestClass]
     public class UnitTestSquareList
     {
-        private class SimpleComparable : IComparable
+        [TestMethod]
+        public void TestContains()
         {
-            private readonly int value;
-            public SimpleComparable(int val) { value = val; }
-            public int CompareTo(object obj)
-            {
-                return ((SimpleComparable)obj).value - value;
-            }
-            public override string ToString()
-            {
-                return $"|{value}|";
-            }
+            var sl = new SquareList<int>();
+            sl.Insert(13);
+            Assert.AreEqual(13, sl.Min);
+            Assert.AreEqual(13, sl.Max);
+            Assert.AreEqual(false, sl.Contains(39));
+            Assert.AreEqual(true, sl.Contains(13));
+            Assert.AreEqual(false, sl.Contains(0));
+        }
+
+        [TestMethod]
+        public void TestDeleteOnEmpty()
+        {
+            var sl = new SquareList<int>();
+            Assert.AreEqual(0, sl.Min);
+            Assert.AreEqual(0, sl.Max);
+            Assert.AreEqual(0, sl.Size);
+            sl.Delete(13);
+            Assert.AreEqual(0, sl.Min);
+            Assert.AreEqual(0, sl.Max);
+            Assert.AreEqual(0, sl.Size);
+        }
+
+        [TestMethod]
+        public void TestDeleteOnNotFound()
+        {
+            var sl = new SquareList<int>();
+            sl.Insert(1);
+            sl.Insert(23);
+            Assert.AreEqual(1, sl.Min);
+            Assert.AreEqual(23, sl.Max);
+            Assert.AreEqual(2, sl.Size);
+            sl.Delete(13);
+            Assert.AreEqual(1, sl.Min);
+            Assert.AreEqual(23, sl.Max);
+            Assert.AreEqual(2, sl.Size);
         }
 
         [TestMethod]
@@ -33,21 +60,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestSingle()
-        {
-            var sl = new SquareList<int>();
-            sl.Insert(13);
-            Assert.AreEqual(13, sl.Min);
-            Assert.AreEqual(13, sl.Max);
-            var slref = new SquareList<SimpleComparable>();
-            var c = new SimpleComparable(13);
-            slref.Insert(c);
-            Assert.AreSame(c, slref.Min);
-            Assert.AreSame(c, slref.Max);
-        }
-
-        [TestMethod]
-        public void TestSmall()
+        public void TestEnumeration()
         {
             var sl = new SquareList<int>();
             sl.Insert(13);
@@ -55,6 +68,8 @@ namespace UnitTests
             sl.Insert(93);
             Assert.AreEqual(13, sl.Min);
             Assert.AreEqual(93, sl.Max);
+            Assert.AreEqual(3, sl.Count());
+            Assert.IsTrue(sl.SequenceEqual(new int[] { 13, 39, 93 }));
             var slref = new SquareList<SimpleComparable>();
             var c1 = new SimpleComparable(13);
             var c2 = new SimpleComparable(39);
@@ -64,6 +79,8 @@ namespace UnitTests
             slref.Insert(c3);
             Assert.AreSame(c3, slref.Min);
             Assert.AreSame(c1, slref.Max);
+            Assert.AreEqual(3, slref.Count());
+            Assert.IsTrue(slref.SequenceEqual(new SimpleComparable[] { c3, c2, c1 }));
         }
 
         [TestMethod]
@@ -101,6 +118,7 @@ namespace UnitTests
             Assert.AreEqual(26, sl.Size);
             Assert.AreEqual(6, sl.MaxDepth);
         }
+
         [TestMethod]
         public void TestLargeWithDeletes()
         {
@@ -141,67 +159,6 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestSingleInsertAndDelete()
-        {
-            var sl = new SquareList<int>();
-            sl.Insert(13);
-            Assert.AreEqual(13, sl.Min);
-            Assert.AreEqual(13, sl.Max);
-            Assert.AreEqual(1, sl.Size);
-            sl.Delete(13);
-            Assert.AreEqual(0, sl.Min);
-            Assert.AreEqual(0, sl.Max);
-            Assert.AreEqual(0, sl.Size);
-        }
-
-        [TestMethod]
-        public void TestDeleteOnEmpty()
-        {
-            var sl = new SquareList<int>();
-            Assert.AreEqual(0, sl.Min);
-            Assert.AreEqual(0, sl.Max);
-            Assert.AreEqual(0, sl.Size);
-            sl.Delete(13);
-            Assert.AreEqual(0, sl.Min);
-            Assert.AreEqual(0, sl.Max);
-            Assert.AreEqual(0, sl.Size);
-        }
-
-        [TestMethod]
-        public void TestQuadrupleInsertAndDoubleDeleteLastOnes()
-        {
-            var sl = new SquareList<int>();
-            sl.Insert(1);
-            sl.Insert(2);
-            sl.Insert(3);
-            sl.Insert(4);
-            Assert.AreEqual(1, sl.Min);
-            Assert.AreEqual(4, sl.Max);
-            Assert.AreEqual(4, sl.Size);
-            sl.Delete(3);
-            sl.Delete(4);
-            Assert.AreEqual(1, sl.Min);
-            Assert.AreEqual(2, sl.Max);
-            Assert.AreEqual(2, sl.Size);
-        }
-        [TestMethod]
-        public void TestQuadrupleInsertAndDoubleDeleteFirstOnes()
-        {
-            var sl = new SquareList<int>();
-            sl.Insert(1);
-            sl.Insert(2);
-            sl.Insert(3);
-            sl.Insert(4);
-            Assert.AreEqual(1, sl.Min);
-            Assert.AreEqual(4, sl.Max);
-            Assert.AreEqual(4, sl.Size);
-            sl.Delete(1);
-            sl.Delete(2);
-            Assert.AreEqual(3, sl.Min);
-            Assert.AreEqual(4, sl.Max);
-            Assert.AreEqual(2, sl.Size);
-        }
-        [TestMethod]
         public void TestMultipleInsertAndMultipleDelete()
         {
             var sl = new SquareList<int>();
@@ -218,6 +175,7 @@ namespace UnitTests
             Assert.AreEqual(9, sl.Max);
             Assert.AreEqual(9, sl.Size);
             Assert.AreEqual(3, sl.MaxDepth);
+            Assert.AreEqual(3, sl.Width);
             sl.Delete(1);
             sl.Delete(2);
             sl.Delete(3);
@@ -227,8 +185,109 @@ namespace UnitTests
             Assert.AreEqual(9, sl.Max);
             Assert.AreEqual(4, sl.Size);
             Assert.AreEqual(2, sl.MaxDepth);
+            Assert.AreEqual(2, sl.Width);
         }
 
+        [TestMethod]
+        public void TestQuadrupleInsertAndDoubleDeleteFirstOnes()
+        {
+            var sl = new SquareList<int>();
+            sl.Insert(1);
+            sl.Insert(2);
+            sl.Insert(3);
+            sl.Insert(4);
+            Assert.AreEqual(1, sl.Min);
+            Assert.AreEqual(4, sl.Max);
+            Assert.AreEqual(4, sl.Size);
+            Assert.AreEqual(2, sl.Width);
+            sl.Delete(1);
+            sl.Delete(2);
+            Assert.AreEqual(3, sl.Min);
+            Assert.AreEqual(4, sl.Max);
+            Assert.AreEqual(2, sl.Size);
+            Assert.AreEqual(1, sl.Width);
+        }
 
+        [TestMethod]
+        public void TestQuadrupleInsertAndDoubleDeleteLastOnes()
+        {
+            var sl = new SquareList<int>();
+            sl.Insert(1);
+            sl.Insert(2);
+            sl.Insert(3);
+            sl.Insert(4);
+            Assert.AreEqual(1, sl.Min);
+            Assert.AreEqual(4, sl.Max);
+            Assert.AreEqual(4, sl.Size);
+            Assert.AreEqual(2, sl.Width);
+            sl.Delete(3);
+            sl.Delete(4);
+            Assert.AreEqual(1, sl.Min);
+            Assert.AreEqual(2, sl.Max);
+            Assert.AreEqual(2, sl.Size);
+            Assert.AreEqual(1, sl.Width);
+        }
+
+        [TestMethod]
+        public void TestSingle()
+        {
+            var sl = new SquareList<int>();
+            sl.Insert(13);
+            Assert.AreEqual(13, sl.Min);
+            Assert.AreEqual(13, sl.Max);
+            var slref = new SquareList<SimpleComparable>();
+            var c = new SimpleComparable(13);
+            slref.Insert(c);
+            Assert.AreSame(c, slref.Min);
+            Assert.AreSame(c, slref.Max);
+        }
+
+        [TestMethod]
+        public void TestSingleInsertAndDelete()
+        {
+            var sl = new SquareList<int>();
+            sl.Insert(13);
+            Assert.AreEqual(13, sl.Min);
+            Assert.AreEqual(13, sl.Max);
+            Assert.AreEqual(1, sl.Size);
+            sl.Delete(13);
+            Assert.AreEqual(0, sl.Min);
+            Assert.AreEqual(0, sl.Max);
+            Assert.AreEqual(0, sl.Size);
+        }
+
+        [TestMethod]
+        public void TestSmall()
+        {
+            var sl = new SquareList<int>();
+            sl.Insert(13);
+            sl.Insert(39);
+            sl.Insert(93);
+            Assert.AreEqual(13, sl.Min);
+            Assert.AreEqual(93, sl.Max);
+            var slref = new SquareList<SimpleComparable>();
+            var c1 = new SimpleComparable(13);
+            var c2 = new SimpleComparable(39);
+            var c3 = new SimpleComparable(93);
+            slref.Insert(c1);
+            slref.Insert(c2);
+            slref.Insert(c3);
+            Assert.AreSame(c3, slref.Min);
+            Assert.AreSame(c1, slref.Max);
+        }
+
+        private class SimpleComparable : IComparable
+        {
+            private readonly int value;
+            public SimpleComparable(int val) { value = val; }
+            public int CompareTo(object obj)
+            {
+                return ((SimpleComparable)obj).value - value;
+            }
+            public override string ToString()
+            {
+                return $"|{value}|";
+            }
+        }
     }
 }
