@@ -1,7 +1,7 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Commons.Collections;
 using System.Linq;
+using Commons.Collections;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UnitTests
 {
@@ -276,18 +276,55 @@ namespace UnitTests
             Assert.AreSame(c1, slref.Max);
         }
 
+        [TestMethod]
+        public void TestSmallWithRepetitions()
+        {
+            var sl = new SquareList<int>();
+            sl.Insert(13);
+            sl.Insert(13);
+            sl.Insert(13);
+            sl.Insert(13);
+            sl.Insert(13);
+            sl.Insert(13);
+            sl.Insert(13);
+            sl.Insert(13);
+            sl.Insert(13);
+            sl.Insert(15);
+            Assert.AreEqual(13, sl.Min);
+            Assert.AreEqual(15, sl.Max);
+            Assert.AreEqual(10, sl.Size);
+            sl.Delete(13); // only the first;
+            Assert.AreEqual(13, sl.Min);
+            Assert.AreEqual(15, sl.Max);
+            Assert.AreEqual(9, sl.Size);
+            sl.Delete(13, true); // all remaining;
+            Assert.AreEqual(15, sl.Min);
+            Assert.AreEqual(15, sl.Max);
+            Assert.AreEqual(1, sl.Size);
+            sl.Delete(15, true); // all;
+            Assert.AreEqual(0, sl.Min);
+            Assert.AreEqual(0, sl.Max);
+            Assert.AreEqual(0, sl.Size);
+        }
+
         private class SimpleComparable : IComparable
         {
-            private readonly int value;
-            public SimpleComparable(int val) { value = val; }
+            public SimpleComparable(int val)
+            {
+                value = val;
+            }
+
             public int CompareTo(object obj)
             {
                 return ((SimpleComparable)obj).value - value;
             }
+
             public override string ToString()
             {
                 return $"|{value}|";
             }
+
+            private readonly int value;
         }
     }
 }
