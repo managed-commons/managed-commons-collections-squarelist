@@ -5,7 +5,7 @@ using System.Resources;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Commons.Collections.SquareList")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Managed Commons library for SquareList specialized collection.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Managed Commons")]
 [assembly: AssemblyProduct("Commons.Collections.SquareList")]

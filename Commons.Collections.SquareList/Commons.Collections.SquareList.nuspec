@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://raw.githubusercontent.com/monoman/managed-commons-core/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/managed-commons/managed-commons-core/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>Almost there!</releaseNotes>
+    <copyright>Copyright (c) 2016 Rafael 'Monoman' Teixeira, Managed Commons Team</copyright>
+    <tags>SpecializedCollections SquareList</tags>
+  </metadata>
+  <files>
+    <file src="lib\**" target="lib" />
+  </files>
+</package>
