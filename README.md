@@ -7,10 +7,9 @@ Commons.Collections.SquareList
 Managed Commons library containing the SquareList specialized collection.
 
 Loosely based on an (article)(http://www.drdobbs.com/database/the-squarelist-data-structure/184405336) published in the May 2013 issue of Dr Dobb's Journal, by Mark Sams.
-His implementation in C used circular doubly-linked lists of doubly-linked lists, I've reimplemented using a List of LinkedLists, which seemed more natural in C#, but that can surely be revisited.
+His implementation in C used circular doubly-linked lists of doubly-linked lists, I've reimplemented using a Lists of LinkedLists, which seemed more natural in C#, but that can surely be revisited.
 This implementation allows for multiple instances of the same value to be inserted, and then deleted one-at-a-time or wholesale.
-Thinking in performance, search for counting/existence is done bidirectionally, but removal scans only in the forward direction, to have stable behavior (remove the first found) when duplicates exist.
-
+Thinking in performance, search for counting/existence is done bidirectionaly, but removal looks only in forward direction.
 
 The SquareList is a structure that is particularly useful in applications that frequently require the current minimum and maximum values, as they both can be found in constant time, even accounting for deletions.
 This structure in the original implementation performed insert/delete/find operations within a worst-case running time of O(sqrt(n)). It is always kept in ascending order, so traversing it in that order is natural and performant.
