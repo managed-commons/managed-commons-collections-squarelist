@@ -5,13 +5,13 @@
       "type": "project",
       "framework": ".NETStandard,Version=v1.0",
       "compile": {
-        "bin/Release/Commons.Collections.SquareList.dll": {}
+        "lib/netstandard1.0/Commons.Collections.SquareList.dll": {}
       },
       "runtime": {
-        "bin/Release/Commons.Collections.SquareList.dll": {}
+        "lib/netstandard1.0/Commons.Collections.SquareList.dll": {}
       },
       "contentFiles": {
-        "bin/Release/Commons.Collections.SquareList.pdb": {
+        "lib/netstandard1.0/Commons.Collections.SquareList.pdb": {
           "buildAction": "None",
           "codeLanguage": "any",
           "copyToOutput": true

@@ -9,7 +9,8 @@ namespace Commons.Collections
         public SquareList(int capacity)
         {
             Capacity = capacity;
-            _lists = new List<VerticalLinkedList<T>>(CalcMaxDepth(capacity) + 1);
+            _maxDepth = CalcMaxDepth(capacity);
+            _lists = new List<VerticalLinkedList<T>>(_maxDepth + 1);
         }
 
         public SquareList() : this(10)
@@ -27,13 +28,11 @@ namespace Commons.Collections
             private set
             {
                 _size = value;
-                if (_size > Capacity)
-                    Capacity = _size;
-                var oldMaxDepth = _maxDepth;
-                _maxDepth = CalcMaxDepth(Capacity);
-                if (oldMaxDepth != _maxDepth)
-                    Resquare(0);
-                else if (_lists[_dirty].Depth > _maxDepth)
+                if (_size > Capacity) {
+                    Capacity = _size + _maxDepth;
+                    _maxDepth = CalcMaxDepth(Capacity);
+                }
+                if (_lists[_dirty].Depth > _maxDepth)
                     Resquare(_dirty);
             }
         }
@@ -171,7 +170,7 @@ namespace Commons.Collections
                 var list = _lists[i];
                 var nextList = ((i + 1) < _lists.Count) ? _lists[i + 1] : null;
                 var delta = list.Depth - _maxDepth;
-                if (delta < 0) {
+                if (delta < -1) {
                     if (nextList != null) {
                         list.MoveToTail(nextList, -delta);
                         if (nextList.Depth == 0)
