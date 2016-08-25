@@ -18,7 +18,7 @@ namespace PerformanceTests
             WriteLine("| Initial Size |  Creation  |  Inserts   |   Deletes  |  Creation  |  Inserts   |   Deletes  |");
             WriteLine("|  (elements)  |    (ms)    |    (ms)    |    (ms)    |    (ms)    |    (ms)    |    (ms)    |");
             WriteLine("----------------------------------------------------------------------------------------------");
-            for (int size = 100; size <= 10000000; size *= 10) {
+            for (int size = 100; size <= 100000000; size *= 10) {
                 var r = RunTestsFor(size);
                 WriteLine($"|  {Pad(size)}  | {Pad(r.slCre)} | {Pad(r.slIns)} | {Pad(r.slDel)} | {Pad(r.sqlCre)} | {Pad(r.sqlIns)} | {Pad(r.sqlDel)} |");
             }
@@ -32,11 +32,11 @@ namespace PerformanceTests
         {
             var results = new Results(size);
             var sl = new SortedList<int, int>(size);
-            results.slCre = Time(() => Create((i)=> sl.Add(i,i), size));
+            results.slCre = Time(() => Create((i) => sl.Add(i, i), size));
             results.slDel = Time(() => HundredTimes((i) => sl.Remove(i), size));
             results.slIns = Time(() => HundredTimes((i) => sl.Add(i, i), size));
 
-            var sql = new SquareList<int>();
+            var sql = new SquareList<int>(size + 100);
             results.sqlCre = Time(() => Create((i) => sql.Insert(i), size));
             results.sqlIns = Time(() => HundredTimes((i) => sql.Insert(i), size));
             results.sqlDel = Time(() => HundredTimes((i) => sql.Delete(i), size));
@@ -46,17 +46,17 @@ namespace PerformanceTests
 
         private static void Create(Action<int> action, int size)
         {
-            for (int i = 1; i < size; i++)
+            for (int i = 1; i <= size; i++)
                 action(i);
         }
 
         private static void HundredTimes(Action<int> action, int size)
         {
             int value = 1;
-            int multiplier = size / 100;
-            for (int i = 1; i < 100; i++) {
+            int increment = size / 100;
+            for (int i = 1; i <= 100; i++) {
                 action(value);
-                value *= multiplier;
+                value += increment;
             }
         }
 
@@ -70,7 +70,7 @@ namespace PerformanceTests
         private struct Results
         {
             public int size, slCre, slIns, slDel, sqlCre, sqlIns, sqlDel;
- 
+
             public Results(int size)
             {
                 this.size = size;

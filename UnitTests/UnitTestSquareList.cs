@@ -171,7 +171,6 @@ namespace UnitTests
             Assert.AreEqual(1, sl.Min);
             Assert.AreEqual(9, sl.Max);
             Assert.AreEqual(9, sl.Size);
-            Assert.IsTrue(sl.Width == 3 || sl.Width == 4);
             sl.Delete(1);
             sl.Delete(2);
             sl.Delete(3);
@@ -180,7 +179,6 @@ namespace UnitTests
             Assert.AreEqual(6, sl.Min);
             Assert.AreEqual(9, sl.Max);
             Assert.AreEqual(4, sl.Size);
-            Assert.AreEqual(2, sl.Width);
         }
 
         [TestMethod]
@@ -194,13 +192,11 @@ namespace UnitTests
             Assert.AreEqual(1, sl.Min);
             Assert.AreEqual(4, sl.Max);
             Assert.AreEqual(4, sl.Size);
-            Assert.AreEqual(2, sl.Width);
             sl.Delete(1);
             sl.Delete(2);
             Assert.AreEqual(3, sl.Min);
             Assert.AreEqual(4, sl.Max);
             Assert.AreEqual(2, sl.Size);
-            Assert.AreEqual(1, sl.Width);
         }
 
         [TestMethod]
@@ -214,13 +210,11 @@ namespace UnitTests
             Assert.AreEqual(1, sl.Min);
             Assert.AreEqual(4, sl.Max);
             Assert.AreEqual(4, sl.Size);
-            Assert.AreEqual(2, sl.Width);
             sl.Delete(3);
             sl.Delete(4);
             Assert.AreEqual(1, sl.Min);
             Assert.AreEqual(2, sl.Max);
             Assert.AreEqual(2, sl.Size);
-            Assert.AreEqual(1, sl.Width);
         }
 
         [TestMethod]

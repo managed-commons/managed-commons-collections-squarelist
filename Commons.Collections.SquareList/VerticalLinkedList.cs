@@ -25,7 +25,22 @@ namespace Commons.Collections
 
         public T Last => _last == null ? default(T) : _last.Value;
 
-        public bool Contains(T value) => Count(value) > 0;
+        public bool Contains(T value)
+        {
+            if (IsEmpty || !InRange(value))
+                return false;
+            var up = _first;
+            var down = _last;
+            while (up != null && down != null) {
+                if (up.Value.CompareTo(value) == 0 || down.Value.CompareTo(value) == 0)
+                    return true;
+                up = up.Next;
+                if (up == down)
+                    break;
+                down = down.Previous;
+            }
+            return false;
+        }
 
         public int Count(T value)
         {
@@ -132,44 +147,78 @@ namespace Commons.Collections
                 Depth++;
             }
         }
+
+        public void MoveToHead(VerticalLinkedList<T> from, int delta)
+        {
+            //while (delta-- > 0) {
+            //    this.InsertAsFirst(from.RemoveLast());
+            //}
+            Node spanLast = from._last;
+            if (spanLast == null)
+                return;
+            Node spanFirst = null;
+            Node cut = spanLast;
+            int size = 0;
+            while (delta-- > 0 && cut != null) {
+                spanFirst = cut;
+                cut = cut.Previous;
+                size++;
+            }
+            if (_last == null)
+                _last = spanLast;
+            else {
+                _first.Previous = spanLast;
+                spanLast.Next = _first;
+            }
+            _first = spanFirst;
+            _first.Previous = null;
+            Depth += size;
+            from._last = cut;
+            if (cut == null) {
+                from.Depth = 0;
+                from._first = null;
+            } else {
+                from.Depth -= size;
+                cut.Next = null;
+            }
+        }
+
         public void MoveToTail(VerticalLinkedList<T> from, int delta)
         {
-            Node first = from._first;
-            if (first == null)
+            Node spanFirst = from._first;
+            if (spanFirst == null)
                 return;
-            Node last = null;
-            Node cut = first;
+            Node spanLast = null;
+            Node cut = spanFirst;
             int size = 0;
-            while (delta++ < 0 && cut != null) {
-                last = cut;
+            while (delta-- > 0 && cut != null) {
+                spanLast = cut;
                 cut = cut.Next;
                 size++;
             }
             if (_last == null)
-                _first = first;
+                _first = spanFirst;
             else {
-                _last.Next = first;
-                first.Previous = _last;
+                _last.Next = spanFirst;
+                spanFirst.Previous = _last;
             }
-            _last = last;
+            _last = spanLast;
+            _last.Next = null;
             Depth += size;
             from._first = cut;
-            from.Depth -= size;
-            if (cut == null)
+            if (cut == null) {
+                from.Depth = 0;
                 from._last = null;
-        }
-
-        public void MoveToHead(VerticalLinkedList<T> from, int delta)
-        {
-            while (delta-- > 0) {
-                this.InsertAsFirst(from.RemoveLast());
+            } else {
+                from.Depth -= size;
+                cut.Previous = null;
             }
         }
 
         public int Remove(T value, bool removeAll)
         {
             lock (this) {
-                if (IsEmpty || !InRange(value))
+                if (!Contains(value))
                     return 0;
                 var up = _first;
                 int removed = 0;
@@ -210,7 +259,7 @@ namespace Commons.Collections
 
         public override string ToString()
         {
-            return IsEmpty ? "[]" : $"[{Concat(this.Take(10))}{(Depth > 10 ? " ..." : "")}]";
+            return IsEmpty ? "[]" : $"<{Depth}> [{Concat(this.Take(10))}{(Depth > 10 ? " ..." : "")}]";
         }
 
         private Node _first;
@@ -293,6 +342,16 @@ namespace Commons.Collections
             public Node(T value)
             {
                 Value = value;
+            }
+
+            public override string ToString()
+            {
+                return $"{ViewOf(Previous)} < {Value} > {ViewOf(Next)}";
+            }
+
+            private static string ViewOf(Node node)
+            {
+                return (node == null) ? "_" : node.Value.ToString();
             }
         }
     }
