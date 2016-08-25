@@ -20,6 +20,8 @@ namespace Commons.Collections
                 _maxDepth = (_size > 0) ? Convert.ToInt32(Math.Ceiling(Math.Sqrt(_size))) : 0;
                 if (oldMaxDepth != _maxDepth)
                     Resquare(0);
+                else if (_lists[_dirty].Depth > _maxDepth)
+                    Resquare(_dirty);
             }
         }
 
@@ -88,7 +90,7 @@ namespace Commons.Collections
         private int _maxDepth = 0;
 
         private int _size = 0;
-        private int _dirty;
+        private int _dirty = 0;
 
         private VerticalLinkedList<T> _lastList => _lists[_lists.Count - 1];
 
@@ -135,8 +137,10 @@ namespace Commons.Collections
                     return FindFirstList(value, m, list);
             } else {
                 if (list.Last.CompareTo(value) >= 0) {
-                    if ((m <= 0) || (_lists[m - 1].Last.CompareTo(value) < 0))
+                    if ((m <= 0) || (_lists[m - 1].Last.CompareTo(value) < 0)) {
+                        _dirty = m;
                         return list;
+                    }
                 }
             }
             if (list.Last.CompareTo(value) > 0)
@@ -168,6 +172,7 @@ namespace Commons.Collections
                     nextList.MoveToHead(list, delta);
                 }
             }
+            _dirty = 0;
         }
 
     }
