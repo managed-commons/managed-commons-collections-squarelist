@@ -13,16 +13,16 @@ namespace PerformanceTests
         {
             WriteLine("Initiating performance tests");
 
-            WriteLine("------------------------------------------------------------------------------------------------------------------------");
-            WriteLine("|==============|              SortedList              |              SquareList              |=========================|");
-            WriteLine("| Initial Size |  Creation  |  Inserts   |   Deletes  |  Creation  |  Inserts   |   Deletes  |  Relative  |  Predicted |");
-            WriteLine("|  (elements)  |    (ms)    |    (ms)    |    (ms)    |    (ms)    |    (ms)    |    (ms)    |=========================|");
-            WriteLine("------------------------------------------------------------------------------------------------------------------------");
+            WriteLine("----------------------------------------------------------------------------------------------");
+            WriteLine("|==============|              SortedList              |              SquareList              |");
+            WriteLine("| Initial Size |  Creation  |  Inserts   |   Deletes  |  Creation  |  Inserts   |   Deletes  |");
+            WriteLine("|  (elements)  |    (ms)    |    (ms)    |    (ms)    |    (ms)    |    (ms)    |    (ms)    |");
+            WriteLine("----------------------------------------------------------------------------------------------");
             for (int size = 100; size <= 10000000; size *= 10) {
                 var r = RunTestsFor(size);
-                WriteLine($"|  {Pad(size)}  | {Pad(r.slCre)} | {Pad(r.slIns)} | {Pad(r.slDel)} | {Pad(r.sqlCre)} | {Pad(r.sqlIns)} | {Pad(r.sqlDel)} | {Pad(r.sqlRelative)} | {Pad(r.sqlPredicted)} |");
+                WriteLine($"|  {Pad(size)}  | {Pad(r.slCre)} | {Pad(r.slIns)} | {Pad(r.slDel)} | {Pad(r.sqlCre)} | {Pad(r.sqlIns)} | {Pad(r.sqlDel)} |");
             }
-            WriteLine("------------------------------------------------------------------------------------------------------------------------");
+            WriteLine("----------------------------------------------------------------------------------------------");
             ReadLine();
         }
 
@@ -70,13 +70,10 @@ namespace PerformanceTests
         private struct Results
         {
             public int size, slCre, slIns, slDel, sqlCre, sqlIns, sqlDel;
-            public int sqlPredicted;
-            public int sqlRelative => sqlPredicted;
-
+ 
             public Results(int size)
             {
                 this.size = size;
-                sqlPredicted = Convert.ToInt32(Math.Sqrt(size));
                 slCre = slIns = slDel = sqlCre = sqlIns = sqlDel = 0;
             }
         }
