@@ -6,16 +6,16 @@ Commons.Collections.SquareList
 Managed Commons library containing the SquareList specialized collection.
 
 Loosely based on an [article](http://www.drdobbs.com/database/the-squarelist-data-structure/184405336) published in the May 2013 issue of Dr Dobb's Journal, by Mark Sams.
-His implementation in C used circular doubly-linked lists of doubly-linked lists, I've reimplemented using a List of LinkedLists, which seemed more natural in C#, but that can surely be revisited.
+His implementation in C used circular doubly-linked lists of doubly-linked lists, I've reimplemented using a List of Dynamic Slices backed a single Big Array, It uses a lot less memory than linked lists, but inserts in crammed sets can have ripple effects with worst case O(n).
 
 **This implementation allows for multiple instances of the same value to be inserted, and then deleted one-at-a-time or wholesale.**
 
 **Thinking about performance, search for counting/existence is done bidirectionally, but removal scans only in the forward direction, to have a stable behavior (remove the first found) when duplicates exist.**
 
 The SquareList is a structure that is particularly useful in applications that frequently require the current minimum and maximum values, as they both can be found in constant time, even accounting for deletions.
-This implementation performs insert/delete/find operations within a worst-case running time of O(sqrt(n)). Values are always kept in ascending order, so traversing it in that order is natural and performant.
+This implementation performs insert/delete/find operations within a worst-case running time of O(sqrt(n)) [In truth O(n) for inserts]. Values are always kept in ascending order, so traversing it in that order is natural and performant.
 
-__Commons.Collections.SquareList 1.0.0-Beta is NOT YET available as a pre-release Nuget:__ [Commons.Collections.SquareList](https://www.nuget.org/packages/Commons.Core/).
+__Commons.Collections.SquareList 1.0.0-RC is NOT YET available as a pre-release Nuget:__ [Commons.Collections.SquareList](https://www.nuget.org/packages/Commons.Core/).
 
 
 Some performance testing:
