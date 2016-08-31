@@ -218,6 +218,74 @@ namespace UnitTests
         }
 
         [TestMethod]
+        public void TestShrink()
+        {
+            var sl = new SquareList<int>(9);
+            sl.Insert(13);
+            sl.Insert(100);
+            sl.Insert(39);
+            sl.Insert(23);
+            sl.Insert(93);
+            sl.Insert(1);
+            sl.Insert(2);
+            sl.Insert(3);
+            sl.Insert(4);
+            sl.Insert(5);
+            sl.Insert(6);
+            sl.Insert(7);
+            sl.Insert(8);
+            sl.Insert(9);
+            sl.Insert(10);
+            sl.Insert(11);
+            sl.Insert(12);
+            sl.Insert(14);
+            sl.Insert(15);
+            sl.Insert(16);
+            sl.Insert(17);
+            sl.Insert(18);
+            sl.Insert(19);
+            sl.Insert(20);
+            sl.Insert(21);
+            sl.Insert(22);
+            Assert.AreEqual(1, sl.Min);
+            Assert.AreEqual(100, sl.Max);
+            Assert.AreEqual(26, sl.Size);
+            Assert.AreEqual(30, sl.Capacity);
+            Assert.AreEqual(86, sl.Ratio);
+            sl.Delete(2);
+            sl.Delete(3);
+            sl.Delete(4);
+            sl.Delete(5);
+            sl.Delete(6);
+            sl.Delete(7);
+            sl.Delete(8);
+            sl.Delete(9);
+            sl.Delete(10);
+            sl.Delete(11);
+            sl.Delete(12);
+            sl.Delete(14);
+            sl.Delete(15);
+            sl.Delete(16);
+            Assert.AreEqual(1, sl.Min);
+            Assert.AreEqual(100, sl.Max);
+            Assert.AreEqual(12, sl.Size);
+            Assert.AreEqual(30, sl.Capacity);
+            Assert.AreEqual(40, sl.Ratio);
+            sl.ShrinkWithSlackOf(1);
+            Assert.AreEqual(1, sl.Min);
+            Assert.AreEqual(100, sl.Max);
+            Assert.AreEqual(12, sl.Size);
+            Assert.AreEqual(30, sl.Capacity);
+            Assert.AreEqual(40, sl.Ratio);
+            sl.ShrinkWithSlackOf(0);
+            Assert.AreEqual(1, sl.Min);
+            Assert.AreEqual(100, sl.Max);
+            Assert.AreEqual(12, sl.Size);
+            Assert.AreEqual(20, sl.Capacity);
+            Assert.AreEqual(60, sl.Ratio);
+        }
+
+        [TestMethod]
         public void TestSingle()
         {
             var sl = new SquareList<int>();
@@ -294,6 +362,46 @@ namespace UnitTests
             Assert.AreEqual(0, sl.Min);
             Assert.AreEqual(0, sl.Max);
             Assert.AreEqual(0, sl.Size);
+        }
+
+        [TestMethod]
+        public void TestUnremove()
+        {
+            var sl = new SquareList<int>();
+            sl.Insert(13);
+            sl.Insert(13);
+            sl.Insert(13);
+            sl.Insert(13);
+            sl.Insert(13);
+            sl.Insert(13);
+            sl.Insert(13);
+            sl.Insert(13);
+            sl.Insert(13);
+            sl.Insert(15);
+            Assert.AreEqual(13, sl.Min);
+            Assert.AreEqual(15, sl.Max);
+            Assert.AreEqual(10, sl.Size);
+            sl.Delete(13, true); // all of them;
+            Assert.AreEqual(15, sl.Min);
+            Assert.AreEqual(15, sl.Max);
+            Assert.AreEqual(1, sl.Size);
+            sl.Insert(1);
+            sl.Insert(2);
+            sl.Insert(3);
+            sl.Insert(4);
+            sl.Insert(5);
+            sl.Insert(6);
+            sl.Insert(7);
+            sl.Insert(8);
+            sl.Insert(9);
+            sl.Insert(10);
+            sl.Insert(11);
+            sl.Insert(12);
+            sl.Insert(13);
+            sl.Insert(14);
+            Assert.AreEqual(1, sl.Min);
+            Assert.AreEqual(15, sl.Max);
+            Assert.AreEqual(15, sl.Size);
         }
 
         private class SimpleComparable : IComparable

@@ -12,9 +12,10 @@ namespace Commons.Collections
             Capacity = _maxDepth * (_maxDepth + 1);
             _bigArray = new T[Capacity];
             _lists = new List<VerticalLinkedList<T>>();
+            _removedLists = new RemovedListsRepository<T>();
         }
 
-        public SquareList() : this(9)
+        public SquareList() : this(16)
         {
         }
 
@@ -22,6 +23,7 @@ namespace Commons.Collections
         public bool IsEmpty => _size <= 0;
         public T Max => IsEmpty ? default(T) : _lastList.Last;
         public T Min => IsEmpty ? default(T) : _firstList.First;
+        public int Ratio => (int)(_size * 100L / Capacity);
         public int Size => _size;
 
         public bool Contains(T value)
@@ -33,19 +35,48 @@ namespace Commons.Collections
         {
             lock (this) {
                 int removed = 0;
-                foreach (var verticalList in _lists) {
-                    removed += verticalList.Remove(value, removeAll);
+                while (true) {
+                    var list = BinarySearch(value);
+                    if (list == null)
+                        break;
+                    removed += list.Remove(value, removeAll);
+                    RemoveListIfEmpty(list);
                     if ((!removeAll) && removed > 0)
                         break;
                 }
                 if (removed > 0)
                     _size -= removed;
-                while (_lastList != null && _lastList.IsEmpty)
-                    _lists.Remove(_lastList);
-                if (!IsEmpty && _firstList.IsEmpty) {
-                    _firstList.Receive(FindFirstListWithContent());
-                    while (_lastList != null && _lastList.IsEmpty)
-                        _lists.Remove(_lastList);
+            }
+        }
+
+        public void DeleteBelow(T value)
+        {
+            lock (this) {
+                int removed = 0;
+                var index = WhereToInsert(value);
+                while (--index >= 0) {
+                    var list = _lists[index];
+                    removed += list.Depth;
+                    RemoveList(list);
+                }
+                if (removed > 0)
+                    _size -= removed;
+                if (IsEmpty)
+                    return;
+                while (!_firstList.IsEmpty && _firstList.First.CompareTo(value) < 0) {
+                    _firstList.RemoveFirst();
+                    _size--;
+                }
+                while (RemoveListIfEmpty(_firstList)) ;
+            }
+        }
+
+        public void DeleteWhere(Func<T, bool> predicate)
+        {
+            lock (this) {
+                foreach (var list in _lists) {
+                    _size -= list.DeleteWhere(predicate);
+                    RemoveListIfEmpty(list);
                 }
             }
         }
@@ -67,34 +98,38 @@ namespace Commons.Collections
         public void Insert(T value)
         {
             lock (this) {
-                if (!IsEmpty) {
-                    if (_size + 1 > Capacity)
-                        Enlarge();
-                    if (_lastList.Last.CompareTo(value) >= 0) {
-                        int listIndex = WhereToInsert(value);
-                        if (listIndex >= 0) {
-                            var list = _lists[listIndex];
-                            while (list.IsFull) {
-                                if (list.OpenSpaceThru(FindListWithSpaceAfter(listIndex))) {
-                                    if (list.Last.CompareTo(value) < 0)
-                                        list = _lists[++listIndex];
-                                } else if (list.OpenSpaceBack(FindListWithSpaceBefore(listIndex))) {
-                                    if (list.First.CompareTo(value) > 0)
-                                        list = _lists[--listIndex];
-                                }
-                            }
-                            list.Insert(value);
-                            _size++;
-                            return;
-                        }
+                FindListToInsertInto(value)?.Insert(value);
+                _size++;
+                while (RemoveListIfEmpty(_lastList)) ;
+            }
+        }
+
+        public void ShrinkWithSlackOf(int slack)
+        {
+            if (slack < 0)
+                throw new ArgumentOutOfRangeException(nameof(slack));
+            var newMaxDepth = CalcMaxDepth(_size) + slack;
+            if (newMaxDepth != _maxDepth) {
+                var newCapacity = newMaxDepth * (newMaxDepth + 1);
+                var newArray = new T[newCapacity];
+                var newLists = new List<VerticalLinkedList<T>>();
+                int index = 0;
+                var newList = AddList(newLists, newArray, newMaxDepth, index);
+                int columnCount = newMaxDepth - slack;
+                int count = columnCount;
+                foreach (var value in this) {
+                    if (count-- == 0) {
+                        index += newMaxDepth;
+                        newList = AddList(newLists, newArray, newMaxDepth, index);
+                        count = columnCount - 1;
                     }
-                    if (!_lastList.IsFull) {
-                        _lastList.Insert(value);
-                        _size++;
-                        return;
-                    }
+                    newList.InsertAsLast(value);
                 }
-                AddNewList(value);
+                _maxDepth = newMaxDepth;
+                _lists = newLists;
+                _bigArray = newArray;
+                _removedLists.Clear();
+                Capacity = newCapacity;
             }
         }
 
@@ -109,6 +144,8 @@ namespace Commons.Collections
 
         private List<VerticalLinkedList<T>> _lists;
 
+        private RemovedListsRepository<T> _removedLists;
+
         private int _size = 0;
 
         private VerticalLinkedList<T> _firstList => IsEmpty ? null : _lists[0];
@@ -116,6 +153,30 @@ namespace Commons.Collections
         private VerticalLinkedList<T> _lastList => IsEmpty ? null : _lists[_lists.Count - 1];
 
         private int Width => _lists.Count;
+
+        private static VerticalLinkedList<T> AddList(List<VerticalLinkedList<T>> newLists, T[] newArray, int newMaxDepth, int index)
+        {
+            var newList = new VerticalLinkedList<T>(newArray, newMaxDepth, index);
+            newLists.Add(newList);
+            return newList;
+        }
+
+        private VerticalLinkedList<T> AddListAtHead()
+        {
+            var endList = new VerticalLinkedList<T>(_bigArray, _maxDepth, 0);
+            _lists.Add(endList);
+            return endList;
+        }
+
+        private VerticalLinkedList<T> AddListAtTail()
+        {
+            if (_lastList.Id < _maxDepth) {
+                var endList = new VerticalLinkedList<T>(_bigArray, _maxDepth, (_lastList.Id + 1) * _maxDepth);
+                _lists.Add(endList);
+                return endList;
+            }
+            return null;
+        }
 
         private void AddNewList(T value)
         {
@@ -164,6 +225,7 @@ namespace Commons.Collections
             _maxDepth = newMaxDepth;
             _lists = newLists;
             _bigArray = newArray;
+            _removedLists.Clear();
             Capacity = newCapacity;
         }
 
@@ -181,25 +243,50 @@ namespace Commons.Collections
             return null;
         }
 
+        private VerticalLinkedList<T> FindListToInsertInto(T value)
+        {
+            if (IsEmpty)
+                return UnremoveList(0, 0) ?? AddListAtHead();
+            if (_size + 1 > Capacity)
+                Enlarge();
+            if (_lastList.Last.CompareTo(value) >= 0) {
+                int listIndex = WhereToInsert(value);
+                if (listIndex >= 0) {
+                    var list = _lists[listIndex];
+                    return list.IsFull ? MakeSpaceAndInsert(value, listIndex, list) : list;
+                }
+            }
+            return _lastList.IsFull ? AddListAtTail() : _lastList;
+        }
+
         private VerticalLinkedList<T> FindListWithSpaceAfter(int listIndex)
         {
-            for (int index = listIndex + 1; index < _lists.Count; index++)
-                if (!_lists[index].IsFull)
-                    return _lists[index];
-            if (_lists.Count <= _maxDepth) {
-                var endList = new VerticalLinkedList<T>(_bigArray, _maxDepth, _lists.Count * _maxDepth);
-                _lists.Add(endList);
-                return endList;
+            var list = _lists[listIndex];
+            var id = list.Id;
+            for (int index = listIndex + 1; index < _lists.Count; index++) {
+                list = _lists[index];
+                if (list.Id != id + 1)
+                    return UnremoveList(id + 1, index);
+                if (!list.IsFull)
+                    return list;
+                id = list.Id;
             }
-            return null;
+            return UnremoveList(_lastList.Id + 1, _lists.Count) ?? AddListAtTail();
         }
 
         private VerticalLinkedList<T> FindListWithSpaceBefore(int listIndex)
         {
-            for (int index = listIndex - 1; index >= 0; index--)
-                if (!_lists[index].IsFull)
-                    return _lists[index];
-            return null;
+            var list = _lists[listIndex];
+            var id = list.Id;
+            for (int index = listIndex - 1; index >= 0; index--) {
+                list = _lists[index];
+                if (list.Id != id - 1)
+                    return UnremoveList(id - 1, index + 1);
+                if (!list.IsFull)
+                    return list;
+                id = list.Id;
+            }
+            return UnremoveList(_firstList.Id - 1, 0);
         }
 
         private int InternalBinarySearch(T value, int i, int j, bool exact)
@@ -223,6 +310,37 @@ namespace Commons.Collections
             else
                 i = m + 1;
             return InternalBinarySearch(value, i, j, exact);
+        }
+
+        private VerticalLinkedList<T> MakeSpaceAndInsert(T value, int listIndex, VerticalLinkedList<T> list)
+        {
+            var listAfter = FindListWithSpaceAfter(listIndex);
+            var listBefore = FindListWithSpaceBefore(listIndex);
+            list.OpenSpaceAndInsert(value, listAfter, listBefore);
+            return null;
+        }
+
+        private void RemoveList(VerticalLinkedList<T> list)
+        {
+            _removedLists.Add(list);
+            _lists.Remove(list);
+        }
+
+        private bool RemoveListIfEmpty(VerticalLinkedList<T> list)
+        {
+            if (list != null && list.IsEmpty) {
+                RemoveList(list);
+                return true;
+            }
+            return false;
+        }
+
+        private VerticalLinkedList<T> UnremoveList(int id, int at)
+        {
+            var list = _removedLists.Recover(id);
+            if (list != null)
+                _lists.Insert(at, list);
+            return list;
         }
 
         private int WhereToInsert(T value) => InternalBinarySearch(value, 0, _lists.Count - 1, false);

@@ -22,10 +22,21 @@ namespace Commons.Collections
         }
 
         public int Depth => _count;
+
         public T First => IsEmpty ? default(T) : _bigArray[_firstIndex];
+
+        public int Id => _firstIndex / _maxDepth;
+
         public bool IsEmpty => _count < 1;
+
         public bool IsFull => _count >= _maxDepth;
+
         public T Last => IsEmpty ? default(T) : _bigArray[_lastIndex];
+
+        public void Clear()
+        {
+            _count = 0;
+        }
 
         public bool Contains(T value)
         {
@@ -82,6 +93,21 @@ namespace Commons.Collections
                 }
                 return count;
             }
+        }
+
+        public int DeleteWhere(Func<T, bool> predicate)
+        {
+            int removed = 0;
+            var next = _firstIndex;
+            for (int i = _count; i > 0; i--) {
+                var value = _bigArray[next];
+                if (predicate(value)) {
+                    InnerRemove(next);
+                    removed++;
+                } else
+                    next++;
+            }
+            return removed;
         }
 
         public IEnumerator<T> GetEnumerator()
@@ -176,7 +202,7 @@ namespace Commons.Collections
 
         public override string ToString()
         {
-            return IsEmpty ? "[]" : $"<{Depth}> [{Concat(this.Take(10))}{(Depth > 10 ? " ..." : "")}]";
+            return $"#{Id} " + (IsEmpty ? "[]" : $"^{Depth} [{Concat(this.Take(10))}{(Depth > 10 ? " ..." : "")}]");
         }
 
         internal VerticalLinkedList<T> CopyTo(T[] newArray, int newMaxDepth, int firstIndex)
@@ -189,32 +215,26 @@ namespace Commons.Collections
             return newList;
         }
 
-        internal bool OpenSpaceBack(VerticalLinkedList<T> startList)
+        internal void OpenSpaceAndInsert(T value, VerticalLinkedList<T> listAfter, VerticalLinkedList<T> listBefore)
         {
-            if (startList == null)
-                return false;
-            int delta = startList._slack;
-            var bottom = _lastIndex - delta;
-            for (int i = startList._lastIndex; i <= bottom; i++)
-                _bigArray[i] = _bigArray[i + delta];
-            _count -= delta;
-            startList._count += delta;
-            return true;
-        }
-
-        internal bool OpenSpaceThru(VerticalLinkedList<T> endList)
-        {
-            if (endList == null)
-                return false;
-            int delta = endList._slack / 2;
-            if (delta < 1)
-                delta = 1;
-            var bottom = _lastIndex + 1 - delta;
-            for (int i = endList._lastIndex; i >= bottom; i--)
-                _bigArray[i + delta] = _bigArray[i];
-            _count -= delta;
-            endList._count += delta;
-            return true;
+            if (!IsFull)
+                throw new InvalidOperationException();
+            var slot = WhereToInsert(value);
+            if (listAfter != null && listBefore != null && listAfter._lastIndex - slot < slot - listBefore._lastIndex)
+                listBefore = null;
+            if (listBefore == null) {
+                for (int i = listAfter._lastIndex; i >= slot; i--)
+                    _bigArray[i + 1] = _bigArray[i];
+                listAfter._count += 1;
+            } else {
+                var nextFirst = listBefore._firstIndex + _maxDepth;
+                listBefore._count += 1;
+                _bigArray[listBefore._lastIndex] = _bigArray[nextFirst];
+                slot--;
+                for (int i = nextFirst; i < slot; i++)
+                    _bigArray[i] = _bigArray[i + 1];
+            }
+            _bigArray[slot] = value;
         }
 
         internal void Receive(VerticalLinkedList<T> from)
@@ -228,11 +248,16 @@ namespace Commons.Collections
             from._count = 0;
         }
 
-        private T[] _bigArray;
+        private readonly T[] _bigArray;
+
+        private readonly int _firstIndex;
+
+        private readonly int _maxDepth;
+
         private int _count;
-        private int _firstIndex;
-        private int _maxDepth;
+
         private int _lastIndex => _firstIndex + _count - 1;
+
         private int _slack => _maxDepth - _count;
 
         private void AddAfter(int index, T value)
@@ -278,6 +303,21 @@ namespace Commons.Collections
                 _bigArray[i] = _bigArray[i + 1];
             _count--;
             return value;
+        }
+
+        private int WhereToInsert(T value)
+        {
+            var up = _firstIndex;
+            var down = _lastIndex;
+            for (int i = _count; i > 0; i--) {
+                if (_bigArray[up].CompareTo(value) > 0)
+                    return up;
+                if (_bigArray[down].CompareTo(value) <= 0)
+                    return down + 1;
+                up++;
+                down--;
+            }
+            throw new ArgumentOutOfRangeException(nameof(value));
         }
     }
 }
