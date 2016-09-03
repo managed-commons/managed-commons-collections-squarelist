@@ -9,6 +9,62 @@ namespace UnitTests
     public class UnitTestSquareList
     {
         [TestMethod]
+        public void TestConstructorWithSource()
+        {
+            var numbers = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
+            var sl = new SquareList<int>(16, numbers);
+            Assert.IsTrue(sl.SequenceEqual(numbers));
+            sl.Insert(13);
+            sl.Insert(100);
+            sl.Insert(39);
+            sl.Insert(23);
+            sl.Insert(93);
+            sl.Insert(12);
+            sl.Insert(14);
+            sl.Insert(15);
+            sl.Insert(16);
+            sl.Insert(17);
+            sl.Insert(18);
+            sl.Insert(19);
+            sl.Insert(20);
+            Assert.AreEqual(1, sl.Min);
+            Assert.AreEqual(100, sl.Max);
+            Assert.AreEqual(24, sl.Size);
+            sl.Delete(100);
+            Assert.AreEqual(1, sl.Min);
+            Assert.AreEqual(93, sl.Max);
+            Assert.AreEqual(23, sl.Size);
+        }
+
+        [TestMethod]
+        public void TestConstructorWithSourceWithBadCapacity()
+        {
+            Exception exception = null;
+            var numbers = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
+            try {
+                var sl = new SquareList<int>(9, numbers);
+            } catch (Exception e) {
+                exception = e;
+            }
+            Assert.IsNotNull(exception);
+            Assert.AreEqual(typeof(ArgumentException), exception.GetType());
+        }
+
+        [TestMethod]
+        public void TestConstructorWithSourceWithBadSequence()
+        {
+            Exception exception = null;
+            var numbers = new int[] { 1, 2, 3, 6, 4, 9, 7, 8, 5, 10, 11 };
+            try {
+                var sl = new SquareList<int>(16, numbers);
+            } catch (Exception e) {
+                exception = e;
+            }
+            Assert.IsNotNull(exception);
+            Assert.AreEqual(typeof(ArgumentException), exception.GetType());
+        }
+
+        [TestMethod]
         public void TestContains()
         {
             var sl = new SquareList<int>();

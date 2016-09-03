@@ -8,7 +8,22 @@ namespace Commons.Collections
 {
     internal class VerticalLinkedList<T> : IEnumerable<T> where T : IComparable
     {
-        public VerticalLinkedList(T[] bigArray, int maxDepth, int firstIndex)
+        public IEnumerator<T> GetEnumerator()
+        {
+            return ImplementedEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ImplementedEnumerator();
+        }
+
+        public override string ToString()
+        {
+            return $"#{Id} " + (IsEmpty ? "[]" : $"^{Depth} [{Concat(this.Take(10))}{(Depth > 10 ? " ..." : "")}]");
+        }
+
+        internal VerticalLinkedList(T[] bigArray, int maxDepth, int firstIndex)
         {
             _bigArray = bigArray;
             _maxDepth = maxDepth;
@@ -16,86 +31,67 @@ namespace Commons.Collections
             _count = 0;
         }
 
-        public VerticalLinkedList(T[] bigArray, int maxDepth, int firstIndex, T Value) : this(bigArray, maxDepth, firstIndex)
+        internal VerticalLinkedList(T[] bigArray, int maxDepth, int firstIndex, T Value) : this(bigArray, maxDepth, firstIndex)
         {
-            InsertAsFirst(Value);
+            _count = 1;
+            _bigArray[_firstIndex] = Value;
         }
 
-        public int Depth => _count;
+        internal int Depth => _count;
 
-        public T First => IsEmpty ? default(T) : _bigArray[_firstIndex];
+        internal T First => IsEmpty ? default(T) : _bigArray[_firstIndex];
 
-        public int Id => _firstIndex / _maxDepth;
+        internal int Id => _firstIndex / _maxDepth;
 
-        public bool IsEmpty => _count < 1;
+        internal bool IsEmpty => _count < 1;
 
-        public bool IsFull => _count >= _maxDepth;
+        internal bool IsFull => _count >= _maxDepth;
 
-        public T Last => IsEmpty ? default(T) : _bigArray[_lastIndex];
+        internal T Last => IsEmpty ? default(T) : _bigArray[_lastIndex];
 
-        public void Clear()
+        internal void Clear()
         {
             _count = 0;
         }
 
-        public bool Contains(T value)
+        internal bool Contains(T value)
         {
             if (!InRange(value))
                 return false;
-            var up = _firstIndex;
-            var down = _lastIndex;
-            for (int i = _count; i > 0; i--) {
-                if (_bigArray[up].CompareTo(value) == 0 || _bigArray[down].CompareTo(value) == 0)
-                    return true;
-                up++;
-                down--;
-            }
-            return false;
+            return BinarySearch(value) >= 0;
         }
 
-        public int Count(T value)
+        internal VerticalLinkedList<T> CopyTo(T[] newArray, int newMaxDepth, int firstIndex)
+        {
+            var newList = new VerticalLinkedList<T>(newArray, newMaxDepth, firstIndex);
+            var index = _firstIndex;
+            for (int i = _count; i > 0; i--)
+                newArray[firstIndex++] = _bigArray[index++];
+            newList._count = _count;
+            return newList;
+        }
+
+        internal int Count(T value)
         {
             lock (this) {
                 if (!InRange(value))
                     return 0;
-                var up = _firstIndex;
-                var down = _lastIndex;
-                int count = 0;
-                for (int i = _count; i > 0; i--) {
-                    var upCompare = _bigArray[up].CompareTo(value);
-                    if (upCompare > 0)
-                        return 0;
-                    if (upCompare == 0) {
-                        while (upCompare == 0) {
-                            count++;
-                            up++;
-                            if (--i <= 0)
-                                return count;
-                            upCompare = _bigArray[up].CompareTo(value);
-                        }
-                        return count;
-                    }
-                    var downCompare = _bigArray[down].CompareTo(value);
-                    if (downCompare < 0)
-                        return 0;
-                    if (downCompare == 0) {
-                        while (downCompare == 0) {
-                            count++;
-                            down--;
-                            if (--i <= 0)
-                                return count;
-                            downCompare = _bigArray[down].CompareTo(value);
-                        }
-                        return count;
-                    }
-                    up++;
-                    down--;
-                }
+                var foundAt = BinarySearch(value);
+                if (foundAt < 0)
+                    return 0;
+                int count = 1;
+                var up = foundAt + 1;
+                var top = _lastIndex;
+                while (up++ <= top && _bigArray[up].CompareTo(value) == 0)
+                    count++;
+                var down = foundAt - 1;
+                while (down-- >= _firstIndex && _bigArray[down].CompareTo(value) == 0)
+                    count++;
                 return count;
             }
         }
 
-        public int DeleteWhere(Func<T, bool> predicate)
+        internal int DeleteWhere(Func<T, bool> predicate)
         {
             int removed = 0;
             var next = _firstIndex;
@@ -110,26 +106,17 @@ namespace Commons.Collections
             return removed;
         }
 
-        public IEnumerator<T> GetEnumerator()
-        {
-            return ImplementedEnumerator();
-        }
+        internal bool InRange(T value) => (!IsEmpty) && First.CompareTo(value) <= 0 && Last.CompareTo(value) >= 0;
 
-        IEnumerator IEnumerable.GetEnumerator()
+        internal void Insert(T value)
         {
-            return ImplementedEnumerator();
-        }
-
-        public bool InRange(T value) => (!IsEmpty) && First.CompareTo(value) <= 0 && Last.CompareTo(value) >= 0;
-
-        public void Insert(T value)
-        {
-            if (IsEmpty) {
-                InsertAsFirst(value);
-                return;
-            }
             if (IsFull)
                 throw new ArgumentOutOfRangeException();
+            if (IsEmpty) {
+                _bigArray[_firstIndex] = value;
+                _count = 1;
+                return;
+            }
             var up = _firstIndex;
             var down = _lastIndex;
             for (int i = _count; i > 0; i--) {
@@ -146,73 +133,12 @@ namespace Commons.Collections
             }
         }
 
-        public void InsertAsFirst(T value)
-        {
-            if (IsFull)
-                throw new ArgumentOutOfRangeException();
-            AddBefore(_firstIndex, value);
-        }
-
-        public void InsertAsLast(T value)
+        internal void InsertAsLast(T value)
         {
             if (IsFull)
                 throw new ArgumentOutOfRangeException();
             _count++;
             _bigArray[_lastIndex] = value;
-        }
-
-        public int Remove(T value, bool removeAll)
-        {
-            lock (this) {
-                if (!Contains(value))
-                    return 0;
-                var up = _firstIndex;
-                int removed = 0;
-                for (int i = _count; i > 0; i--) {
-                    var upCompare = _bigArray[up].CompareTo(value);
-                    if (upCompare > 0)
-                        break;
-                    if (upCompare < 0)
-                        up++;
-                    else {
-                        var start = up;
-                        while (upCompare == 0) {
-                            removed++;
-                            InnerRemove(up);
-                            if ((!removeAll) || (--i <= 0))
-                                break;
-                            upCompare = _bigArray[up].CompareTo(value);
-                        }
-                        break;
-                    }
-                }
-                return removed;
-            }
-        }
-
-        public T RemoveFirst()
-        {
-            return InnerRemove(_firstIndex);
-        }
-
-        public T RemoveLast()
-        {
-            return InnerRemove(_lastIndex);
-        }
-
-        public override string ToString()
-        {
-            return $"#{Id} " + (IsEmpty ? "[]" : $"^{Depth} [{Concat(this.Take(10))}{(Depth > 10 ? " ..." : "")}]");
-        }
-
-        internal VerticalLinkedList<T> CopyTo(T[] newArray, int newMaxDepth, int firstIndex)
-        {
-            var newList = new VerticalLinkedList<T>(newArray, newMaxDepth, firstIndex);
-            var index = _firstIndex;
-            for (int i = _count; i > 0; i--)
-                newArray[firstIndex++] = _bigArray[index++];
-            newList._count = _count;
-            return newList;
         }
 
         internal void OpenSpaceAndInsert(T value, VerticalLinkedList<T> listAfter, VerticalLinkedList<T> listBefore)
@@ -248,6 +174,40 @@ namespace Commons.Collections
             from._count = 0;
         }
 
+        internal int Remove(T value, bool removeAll)
+        {
+            lock (this) {
+                if (!Contains(value))
+                    return 0;
+                var up = _firstIndex;
+                int removed = 0;
+                for (int i = _count; i > 0; i--) {
+                    var upCompare = _bigArray[up].CompareTo(value);
+                    if (upCompare > 0)
+                        break;
+                    if (upCompare < 0)
+                        up++;
+                    else {
+                        var start = up;
+                        while (upCompare == 0) {
+                            removed++;
+                            InnerRemove(up);
+                            if ((!removeAll) || (--i <= 0))
+                                break;
+                            upCompare = _bigArray[up].CompareTo(value);
+                        }
+                        break;
+                    }
+                }
+                return removed;
+            }
+        }
+
+        internal T RemoveFirst()
+        {
+            return InnerRemove(_firstIndex);
+        }
+
         private readonly T[] _bigArray;
 
         private readonly int _firstIndex;
@@ -271,6 +231,27 @@ namespace Commons.Collections
                 _bigArray[i + 1] = _bigArray[i];
             _bigArray[index] = value;
             _count++;
+        }
+
+        private int BinarySearch(T value)
+        {
+            int foundAt = -1;
+            var bottom = _firstIndex;
+            var top = _lastIndex;
+            while (bottom <= top) {
+                var mid = (bottom + top) / 2;
+                var compare = _bigArray[mid].CompareTo(value);
+                if (compare == 0) {
+                    foundAt = mid;
+                    break;
+                } else if (compare > 0) {
+                    top = mid - 1;
+                } else {
+                    bottom = mid + 1;
+                }
+            }
+
+            return foundAt;
         }
 
         private string Concat(IEnumerable things)

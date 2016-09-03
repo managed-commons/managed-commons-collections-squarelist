@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Commons.Collections;
 using static System.Console;
 
@@ -58,6 +59,12 @@ namespace PerformanceTests
 
         private static string Pad(int value, int length = 8) => value.ToString("0").PadLeft(length);
 
+        private static IEnumerable<int> Range(int size)
+        {
+            for (int i = 1; i <= size; i++)
+                yield return i;
+        }
+
         private static Results RunTestsFor(int size)
         {
             var results = new Results(size);
@@ -68,16 +75,28 @@ namespace PerformanceTests
             results.slIns = Time(() => HundredTimes((i) => sl.Add(i, i), size));
             results.slSearch = Time(() => HundredTimes((i) => sl.ContainsKey(i), size));
             results.slMin = Time(() => MillionTimes(() => dummy = sl.Keys[0]));
-            results.slMax = Time(() => MillionTimes(() => dummy = sl.Keys[sl.Keys.Count]));
-            var sql = new SquareList<int>(size + 100);
-            results.sqlCre = Time(() => Create((i) => sql.Insert(i), size));
+            results.slMax = Time(() => MillionTimes(() => dummy = sl.Keys[sl.Keys.Count - 1]));
+            SquareList<int> sql = null;
+            results.sqlCre = Time(() => sql = new SquareList<int>(size, Range(size)));
+            if (!sql.Take(10).SequenceEqual(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }))
+                throw new InvalidOperationException();
             results.sqlDel = Time(() => HundredTimes((i) => sql.Delete(i), size));
+            if (sql.Size != size - 100)
+                throw new InvalidOperationException();
             results.sqlIns = Time(() => HundredTimes((i) => sql.Insert(i), size));
+            if (!sql.Take(10).SequenceEqual(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }))
+                throw new InvalidOperationException();
             results.sqlDupIns = Time(() => HundredTimes((i) => sql.Insert(i), size));
+            if (!sql.Take(2).SequenceEqual(new int[] { 1, 1 }))
+                throw new InvalidOperationException();
             results.sqlSearch = Time(() => HundredTimes((i) => sql.Contains(i), size));
             results.sqlCutInHalf = Time(() => sql.DeleteBelow(size / 2));
             results.sqlShrink = Time(() => sql.ShrinkWithSlackOf(0));
+            if (sql.Min != (size / 2))
+                throw new InvalidOperationException();
             results.slMin = Time(() => MillionTimes(() => dummy = sql.Min));
+            if (sql.Max != size)
+                throw new InvalidOperationException();
             results.slMax = Time(() => MillionTimes(() => dummy = sql.Max));
 
             return results;
@@ -86,7 +105,7 @@ namespace PerformanceTests
         private static int Time(Action action)
         {
             var start = DateTimeOffset.UtcNow;
-            try { action(); } catch (Exception) { }
+            try { action(); } catch (Exception e) { WriteLine(e); }
             return Convert.ToInt32((DateTimeOffset.UtcNow - start).TotalMilliseconds);
         }
 

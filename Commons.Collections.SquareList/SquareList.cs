@@ -6,6 +6,27 @@ namespace Commons.Collections
 {
     public class SquareList<T> : IEnumerable<T> where T : IComparable
     {
+        public SquareList(int capacity, IEnumerable<T> source) : this(capacity)
+        {
+            int count = _maxDepth;
+            var newList = AddList(_lists, _bigArray, _maxDepth, 0);
+            T lastValue = default(T);
+            foreach (var value in source) {
+                if (_size > 0 && value.CompareTo(lastValue) < 0)
+                    throw new ArgumentException(nameof(source));
+                lastValue = value;
+                newList.InsertAsLast(value);
+                _size++;
+                if (_size > capacity)
+                    throw new ArgumentException(nameof(source));
+                if (--count <= 0) {
+                    newList = AddList(_lists, _bigArray, _maxDepth, _size);
+                    count = _maxDepth;
+                }
+            }
+            while (RemoveListIfEmpty(_lastList)) ;
+        }
+
         public SquareList(int capacity)
         {
             _maxDepth = CalcMaxDepth(capacity);
@@ -46,6 +67,7 @@ namespace Commons.Collections
                 }
                 if (removed > 0)
                     _size -= removed;
+                while (RemoveListIfEmpty(_lastList)) ;
             }
         }
 
