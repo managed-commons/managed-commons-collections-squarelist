@@ -1,19 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28917.181
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7D010A18-70AD-4ABE-82E3-0EA6A381D7F5}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE.md = LICENSE.md
+		README.md = README.md
+	EndProjectSection
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{2B8B40CA-5D31-4C17-9599-C6D3711E4B8F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commons.Collections.SquareList", "Commons.Collections.SquareList\Commons.Collections.SquareList.csproj", "{1BE4D86B-F460-4104-8CDD-494027FC7852}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7D010A18-70AD-4ABE-82E3-0EA6A381D7F5}"
-	ProjectSection(SolutionItems) = preProject
-		LICENSE = LICENSE
-		README.md = README.md
-	EndProjectSection
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "PerformanceTests", "PerformanceTests\PerformanceTests.xproj", "{A8344C4D-8B77-423A-84D5-DF4DBDC51000}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PerformanceTests", "PerformanceTests\PerformanceTests.csproj", "{A8344C4D-8B77-423A-84D5-DF4DBDC51000}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,5 +36,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CDEBACD6-5B0C-4C49-943D-707321219661}
 	EndGlobalSection
 EndGlobal
