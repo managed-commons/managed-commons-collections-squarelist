@@ -4,14 +4,6 @@
     <TargetFramework>netstandard1.0</TargetFramework>
     <AssemblyName>Commons.Collections.SquareList</AssemblyName>
     <OutputType>Library</OutputType>
-    <PackageId>Commons.Collections.SquareList</PackageId>
-    <RuntimeFrameworkVersion>1.0.4</RuntimeFrameworkVersion>
-    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <ApplicationIcon />
-    <StartupObject />
     <RootNamespace>Commons.Collections</RootNamespace>
     <Authors>Rafael 'Monoman' Teixeira</Authors>
     <PackageProjectUrl>https://github.com/managed-commons</PackageProjectUrl>
