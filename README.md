@@ -85,5 +85,5 @@ SquareList
 
 License: MIT 
 ------------
-See LICENSE.md
+See LICENSE
 
