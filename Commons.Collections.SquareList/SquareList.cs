@@ -1,4 +1,10 @@
-﻿using System;
+// ******************************************************************************************************************************
+// ****
+// ****      Copyright (c) 2016-2020 Rafael 'Monoman' Teixeira
+// ****
+// ******************************************************************************************************************************
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -6,29 +12,27 @@ namespace Commons.Collections
 {
     public class SquareList<T> : IEnumerable<T> where T : IComparable
     {
-        public SquareList(int capacity, IEnumerable<T> source) : this(capacity)
-        {
+        public SquareList(int capacity, IEnumerable<T> source) : this(capacity) {
             int count = _maxDepth;
             var newList = AddList(_lists, _bigArray, _maxDepth, 0);
-            T lastValue = default(T);
+            T lastValue = default;
             foreach (var value in source) {
-                if (_size > 0 && value.CompareTo(lastValue) < 0)
+                if (Size > 0 && value.CompareTo(lastValue) < 0)
                     throw new ArgumentException(nameof(source));
                 lastValue = value;
                 newList.InsertAsLast(value);
-                _size++;
-                if (_size > capacity)
+                Size++;
+                if (Size > capacity)
                     throw new ArgumentException(nameof(source));
                 if (--count <= 0) {
-                    newList = AddList(_lists, _bigArray, _maxDepth, _size);
+                    newList = AddList(_lists, _bigArray, _maxDepth, Size);
                     count = _maxDepth;
                 }
             }
             while (RemoveListIfEmpty(_lastList)) ;
         }
 
-        public SquareList(int capacity)
-        {
+        public SquareList(int capacity) {
             _maxDepth = CalcMaxDepth(capacity);
             Capacity = _maxDepth * (_maxDepth + 1);
             _bigArray = new T[Capacity];
@@ -36,24 +40,19 @@ namespace Commons.Collections
             _removedLists = new RemovedListsRepository<T>();
         }
 
-        public SquareList() : this(16)
-        {
+        public SquareList() : this(16) {
         }
 
         public int Capacity { get; private set; }
-        public bool IsEmpty => _size <= 0;
+        public bool IsEmpty => Size <= 0;
         public T Max => IsEmpty ? default(T) : _lastList.Last;
         public T Min => IsEmpty ? default(T) : _firstList.First;
-        public int Ratio => (int)(_size * 100L / Capacity);
-        public int Size => _size;
+        public int Ratio => (int)(Size * 100L / Capacity);
+        public int Size { get; private set; } = 0;
 
-        public bool Contains(T value)
-        {
-            return (!IsEmpty) && (BinarySearch(value) != null);
-        }
+        public bool Contains(T value) => (!IsEmpty) && (BinarySearch(value) != null);
 
-        public void Delete(T value, bool removeAll = false)
-        {
+        public void Delete(T value, bool removeAll = false) {
             lock (this) {
                 int removed = 0;
                 while (true) {
@@ -66,13 +65,12 @@ namespace Commons.Collections
                         break;
                 }
                 if (removed > 0)
-                    _size -= removed;
+                    Size -= removed;
                 while (RemoveListIfEmpty(_lastList)) ;
             }
         }
 
-        public void DeleteBelow(T value)
-        {
+        public void DeleteBelow(T value) {
             lock (this) {
                 int removed = 0;
                 var index = WhereToInsert(value);
@@ -82,55 +80,50 @@ namespace Commons.Collections
                     RemoveList(list);
                 }
                 if (removed > 0)
-                    _size -= removed;
+                    Size -= removed;
                 if (IsEmpty)
                     return;
                 while (!_firstList.IsEmpty && _firstList.First.CompareTo(value) < 0) {
                     _firstList.RemoveFirst();
-                    _size--;
+                    Size--;
                 }
                 while (RemoveListIfEmpty(_firstList)) ;
             }
         }
 
-        public void DeleteWhere(Func<T, bool> predicate)
-        {
+        public void DeleteWhere(Func<T, bool> predicate) {
             lock (this) {
                 foreach (var list in _lists) {
-                    _size -= list.DeleteWhere(predicate);
+                    Size -= list.DeleteWhere(predicate);
                     RemoveListIfEmpty(list);
                 }
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
+        IEnumerator IEnumerable.GetEnumerator() {
             foreach (var verticalList in _lists)
                 foreach (var value in verticalList)
                     yield return value;
         }
 
-        IEnumerator<T> IEnumerable<T>.GetEnumerator()
-        {
+        IEnumerator<T> IEnumerable<T>.GetEnumerator() {
             foreach (var verticalList in _lists)
                 foreach (var value in verticalList)
                     yield return value;
         }
 
-        public void Insert(T value)
-        {
+        public void Insert(T value) {
             lock (this) {
                 FindListToInsertInto(value)?.Insert(value);
-                _size++;
+                Size++;
                 while (RemoveListIfEmpty(_lastList)) ;
             }
         }
 
-        public void ShrinkWithSlackOf(int slack)
-        {
+        public void ShrinkWithSlackOf(int slack) {
             if (slack < 0)
                 throw new ArgumentOutOfRangeException(nameof(slack));
-            var newMaxDepth = CalcMaxDepth(_size) + slack;
+            var newMaxDepth = CalcMaxDepth(Size) + slack;
             if (newMaxDepth != _maxDepth) {
                 var newCapacity = newMaxDepth * (newMaxDepth + 1);
                 var newArray = new T[newCapacity];
@@ -155,43 +148,31 @@ namespace Commons.Collections
             }
         }
 
-        public override string ToString()
-        {
-            return $"SquareList({Size} of {Capacity} as {_maxDepth} x {Width}) [{DumpLists()}]";
-        }
+        public override string ToString() => $"SquareList({Size} of {Capacity} as {_maxDepth} x {_width}) [{DumpLists()}]";
 
-        internal T[] _bigArray;
-
-        internal int _maxDepth = 0;
-
+        private readonly RemovedListsRepository<T> _removedLists;
+        private T[] _bigArray;
         private List<VerticalLinkedList<T>> _lists;
-
-        private RemovedListsRepository<T> _removedLists;
-
-        private int _size = 0;
-
+        private int _maxDepth = 0;
         private VerticalLinkedList<T> _firstList => IsEmpty ? null : _lists[0];
 
-        private VerticalLinkedList<T> _lastList => IsEmpty ? null : _lists[_lists.Count - 1];
+        private VerticalLinkedList<T> _lastList => IsEmpty ? null : _lists[^1];
 
-        private int Width => _lists.Count;
+        private int _width => _lists.Count;
 
-        private static VerticalLinkedList<T> AddList(List<VerticalLinkedList<T>> newLists, T[] newArray, int newMaxDepth, int index)
-        {
+        private static VerticalLinkedList<T> AddList(List<VerticalLinkedList<T>> newLists, T[] newArray, int newMaxDepth, int index) {
             var newList = new VerticalLinkedList<T>(newArray, newMaxDepth, index);
             newLists.Add(newList);
             return newList;
         }
 
-        private VerticalLinkedList<T> AddListAtHead()
-        {
+        private VerticalLinkedList<T> AddListAtHead() {
             var endList = new VerticalLinkedList<T>(_bigArray, _maxDepth, 0);
             _lists.Add(endList);
             return endList;
         }
 
-        private VerticalLinkedList<T> AddListAtTail()
-        {
+        private VerticalLinkedList<T> AddListAtTail() {
             if (_lastList.Id < _maxDepth) {
                 var endList = new VerticalLinkedList<T>(_bigArray, _maxDepth, (_lastList.Id + 1) * _maxDepth);
                 _lists.Add(endList);
@@ -200,41 +181,28 @@ namespace Commons.Collections
             return null;
         }
 
-        private void AddNewList(T value)
-        {
+        private void AddNewList(T value) {
             _lists.Add(new VerticalLinkedList<T>(_bigArray, _maxDepth, _lists.Count * _maxDepth, value));
-            _size++;
+            Size++;
         }
 
-        private VerticalLinkedList<T> BinarySearch(T value)
-        {
+        private VerticalLinkedList<T> BinarySearch(T value) {
             var result = InternalBinarySearch(value, 0, _lists.Count - 1, true);
             return result >= 0 ? _lists[result] : null;
         }
 
-        private int CalcMaxDepth(int size)
-        {
-            return (size > 0) ? Convert.ToInt32(Math.Ceiling(Math.Sqrt(size))) : 0;
-        }
+        private int CalcMaxDepth(int size) => (size > 0) ? Convert.ToInt32(Math.Ceiling(Math.Sqrt(size))) : 0;
 
         private string Dump(VerticalLinkedList<T> list) => (list == null) ? "!" : list.ToString();
 
-        private string DumpLists()
+        private string DumpLists() => _lists.Count switch
         {
-            switch (_lists.Count) {
-                case 0:
-                    return "";
+            0 => "",
+            1 => $"{Dump(_firstList)}",
+            _ => $"{Dump(_firstList)} ...  {Dump(_lastList)}",
+        };
 
-                case 1:
-                    return $"{Dump(_firstList)}";
-
-                default:
-                    return $"{Dump(_firstList)} ...  {Dump(_lastList)}";
-            }
-        }
-
-        private void Enlarge()
-        {
+        private void Enlarge() {
             var newMaxDepth = _maxDepth + 1;
             var newCapacity = newMaxDepth * (newMaxDepth + 1);
             var newArray = new T[newCapacity];
@@ -251,25 +219,22 @@ namespace Commons.Collections
             Capacity = newCapacity;
         }
 
-        private int FindFirstList(T value, int m)
-        {
+        private int FindFirstList(T value, int m) {
             while (--m >= 0 && _lists[m].Contains(value)) { }
             return m + 1;
         }
 
-        private VerticalLinkedList<T> FindFirstListWithContent()
-        {
+        private VerticalLinkedList<T> FindFirstListWithContent() {
             for (int index = 1; index < _lists.Count; index++)
                 if (!_lists[index].IsEmpty)
                     return _lists[index];
             return null;
         }
 
-        private VerticalLinkedList<T> FindListToInsertInto(T value)
-        {
+        private VerticalLinkedList<T> FindListToInsertInto(T value) {
             if (IsEmpty)
                 return UnremoveList(0, 0) ?? AddListAtHead();
-            if (_size + 1 > Capacity)
+            if (Size + 1 > Capacity)
                 Enlarge();
             if (_lastList.Last.CompareTo(value) >= 0) {
                 int listIndex = WhereToInsert(value);
@@ -281,8 +246,7 @@ namespace Commons.Collections
             return _lastList.IsFull ? AddListAtTail() : _lastList;
         }
 
-        private VerticalLinkedList<T> FindListWithSpaceAfter(int listIndex)
-        {
+        private VerticalLinkedList<T> FindListWithSpaceAfter(int listIndex) {
             var list = _lists[listIndex];
             var id = list.Id;
             for (int index = listIndex + 1; index < _lists.Count; index++) {
@@ -296,8 +260,7 @@ namespace Commons.Collections
             return UnremoveList(_lastList.Id + 1, _lists.Count) ?? AddListAtTail();
         }
 
-        private VerticalLinkedList<T> FindListWithSpaceBefore(int listIndex)
-        {
+        private VerticalLinkedList<T> FindListWithSpaceBefore(int listIndex) {
             var list = _lists[listIndex];
             var id = list.Id;
             for (int index = listIndex - 1; index >= 0; index--) {
@@ -311,8 +274,7 @@ namespace Commons.Collections
             return UnremoveList(_firstList.Id - 1, 0);
         }
 
-        private int InternalBinarySearch(T value, int i, int j, bool exact)
-        {
+        private int InternalBinarySearch(T value, int i, int j, bool exact) {
             if (j < i)
                 return -1;
             int m = (i + j) / 2;
@@ -334,22 +296,19 @@ namespace Commons.Collections
             return InternalBinarySearch(value, i, j, exact);
         }
 
-        private VerticalLinkedList<T> MakeSpaceAndInsert(T value, int listIndex, VerticalLinkedList<T> list)
-        {
+        private VerticalLinkedList<T> MakeSpaceAndInsert(T value, int listIndex, VerticalLinkedList<T> list) {
             var listAfter = FindListWithSpaceAfter(listIndex);
             var listBefore = FindListWithSpaceBefore(listIndex);
             list.OpenSpaceAndInsert(value, listAfter, listBefore);
             return null;
         }
 
-        private void RemoveList(VerticalLinkedList<T> list)
-        {
+        private void RemoveList(VerticalLinkedList<T> list) {
             _removedLists.Add(list);
             _lists.Remove(list);
         }
 
-        private bool RemoveListIfEmpty(VerticalLinkedList<T> list)
-        {
+        private bool RemoveListIfEmpty(VerticalLinkedList<T> list) {
             if (list != null && list.IsEmpty) {
                 RemoveList(list);
                 return true;
@@ -357,8 +316,7 @@ namespace Commons.Collections
             return false;
         }
 
-        private VerticalLinkedList<T> UnremoveList(int id, int at)
-        {
+        private VerticalLinkedList<T> UnremoveList(int id, int at) {
             var list = _removedLists.Recover(id);
             if (list != null)
                 _lists.Insert(at, list);

@@ -5,13 +5,16 @@ VisualStudioVersion = 16.0.28917.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7D010A18-70AD-4ABE-82E3-0EA6A381D7F5}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
 		LICENSE.md = LICENSE.md
 		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{2B8B40CA-5D31-4C17-9599-C6D3711E4B8F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commons.Collections.SquareList", "Commons.Collections.SquareList\Commons.Collections.SquareList.csproj", "{1BE4D86B-F460-4104-8CDD-494027FC7852}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Commons.Collections.SquareList", "Commons.Collections.SquareList\Commons.Collections.SquareList.csproj", "{1BE4D86B-F460-4104-8CDD-494027FC7852}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PerformanceTests", "PerformanceTests\PerformanceTests.csproj", "{A8344C4D-8B77-423A-84D5-DF4DBDC51000}"
 EndProject

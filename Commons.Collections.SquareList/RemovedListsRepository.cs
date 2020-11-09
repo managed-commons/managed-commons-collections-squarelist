@@ -1,4 +1,10 @@
-﻿using System;
+// ******************************************************************************************************************************
+// ****
+// ****      Copyright (c) 2016-2020 Rafael 'Monoman' Teixeira
+// ****
+// ******************************************************************************************************************************
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -21,10 +27,7 @@ namespace Commons.Collections
             _lists.Add(list.Id, list);
         }
 
-        internal void Clear()
-        {
-            _lists.Clear();
-        }
+        internal void Clear() => _lists.Clear();
 
         internal VerticalLinkedList<T> Recover(int id)
         {

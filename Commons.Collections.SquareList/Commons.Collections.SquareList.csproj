@@ -1,19 +1,24 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard1.0</TargetFramework>
-    <AssemblyName>Commons.Collections.SquareList</AssemblyName>
-    <OutputType>Library</OutputType>
-    <RootNamespace>Commons.Collections</RootNamespace>
-    <Authors>Rafael 'Monoman' Teixeira</Authors>
-    <PackageProjectUrl>https://github.com/managed-commons</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/managed-commons/managed-commons-collections-squarelist</RepositoryUrl>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>First release</PackageReleaseNotes>
-    <Description>Managed Commons library for SquareList specialized collection.</Description>
-    <Copyright>Copyright © 2016-2019 Rafael 'Monoman' Teixeira</Copyright>
-    <PackageTags>Collections Ordered</PackageTags>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-  </PropertyGroup>
+    <PropertyGroup>
+        <LangVersion>9</LangVersion>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <AssemblyName>Commons.Collections.SquareList</AssemblyName>
+        <OutputType>Library</OutputType>
+        <RootNamespace>Commons.Collections</RootNamespace>
+        <Authors>Rafael 'Monoman' Teixeira</Authors>
+        <PackageProjectUrl>https://github.com/managed-commons</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/managed-commons/managed-commons-collections-squarelist</RepositoryUrl>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageReleaseNotes>Modernizing...</PackageReleaseNotes>
+        <Description>Managed Commons library for SquareList specialized collection.</Description>
+        <Copyright>Copyright © 2016-2020 Rafael 'Monoman' Teixeira</Copyright>
+        <PackageTags>Collections Ordered</PackageTags>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+    </PropertyGroup>
 
 </Project>

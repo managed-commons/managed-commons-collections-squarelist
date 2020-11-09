@@ -1,19 +1,29 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
-    <AssemblyName>PerformanceTests</AssemblyName>
-    <OutputType>Exe</OutputType>
-    <PackageId>PerformanceTests</PackageId>
-    <RuntimeFrameworkVersion>1.0.4</RuntimeFrameworkVersion>
-    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <LangVersion>9</LangVersion>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <IsPackable>false</IsPackable>
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+        <Authors>Rafael 'Monoman' Teixeira</Authors>
+        <PackageProjectUrl>https://github.com/managed-commons</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/managed-commons/managed-commons-collections-squarelist</RepositoryUrl>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageReleaseNotes>Modernizing...</PackageReleaseNotes>
+        <Description>Managed Commons library for SquareList specialized collection.</Description>
+        <Copyright>Copyright © 2016-2020 Rafael 'Monoman' Teixeira</Copyright>
+        <PackageTags>Collections Ordered</PackageTags>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
+        <AssemblyName>PerformanceTests</AssemblyName>
+        <OutputType>Exe</OutputType>
+        <PackageId>PerformanceTests</PackageId>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Commons.Collections.SquareList\Commons.Collections.SquareList.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Commons.Collections.SquareList\Commons.Collections.SquareList.csproj" />
+    </ItemGroup>
+
 
 </Project>
