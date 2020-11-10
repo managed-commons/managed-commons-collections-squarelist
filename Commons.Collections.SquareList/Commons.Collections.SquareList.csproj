@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <LangVersion>9</LangVersion>
-        <TargetFramework>netstandard2.1</TargetFramework>
+        <TargetFrameworks>netstandard2.1;net5.0</TargetFrameworks>
         <AssemblyName>Commons.Collections.SquareList</AssemblyName>
         <OutputType>Library</OutputType>
         <RootNamespace>Commons.Collections</RootNamespace>
@@ -10,15 +10,28 @@
         <PackageProjectUrl>https://github.com/managed-commons</PackageProjectUrl>
         <RepositoryUrl>https://github.com/managed-commons/managed-commons-collections-squarelist</RepositoryUrl>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageReleaseNotes>Modernizing...</PackageReleaseNotes>
+        <PackageReleaseNotes>Packaging for NETSTANDARD2.1 and NET5</PackageReleaseNotes>
         <Description>Managed Commons library for SquareList specialized collection.</Description>
         <Copyright>Copyright © 2016-2020 Rafael 'Monoman' Teixeira</Copyright>
         <PackageTags>Collections Ordered</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Version>1.0.1</Version>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <DefineConstants>DEBUG;TRACE</DefineConstants>
     </PropertyGroup>
+    
+    <Target AfterTargets="Pack" Name="PushPackage" Condition="'$(OS)' == 'Windows_NT'">
+        <PropertyGroup>
+            <LatestPackage>$(PackageId).$(Version).nupkg</LatestPackage>
+            <PushCommand>dotnet nuget push $(PackageOutputAbsolutePath)$(LatestPackage) --force-english-output --source github-managed-commons --skip-duplicate</PushCommand>
+        </PropertyGroup>
+        <Exec ConsoleToMSBuild="true" Command="$(PushCommand)" IgnoreExitCode="true" IgnoreStandardErrorWarningFormat="true" StandardErrorImportance="low" StandardOutputImportance="low">
+            <Output PropertyName="PushOutput" TaskParameter="ConsoleOutput" />
+        </Exec>
+        <Message Importance="high" Text="Pushed $(LatestPackage) to GitHub" Condition="!$([System.Text.RegularExpressions.Regex]::IsMatch('$(PushOutput)', 'already exists'))" />
+        <Warning Code="NUGET" Text="Didn't push $(LatestPackage) to GitHub - Already there" Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(PushOutput)', 'already exists'))" />
+    </Target>
 
 </Project>

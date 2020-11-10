@@ -99,8 +99,7 @@ namespace Commons.Collections
 
         internal void Insert(T value)
         {
-            if (IsFull)
-                throw new ArgumentOutOfRangeException();
+            CheckCapacity();
             if (IsEmpty) {
                 _bigArray[_firstIndex] = value;
                 Depth = 1;
@@ -122,12 +121,15 @@ namespace Commons.Collections
             }
         }
 
-        internal void InsertAsLast(T value)
-        {
-            if (IsFull)
-                throw new ArgumentOutOfRangeException();
+        internal void InsertAsLast(T value) {
+            CheckCapacity();
             Depth++;
             _bigArray[_lastIndex] = value;
+        }
+
+        private void CheckCapacity() {
+            if (IsFull)
+                throw new InvalidOperationException("Can't add any more values!");
         }
 
         internal void OpenSpaceAndInsert(T value, VerticalLinkedList<T> listAfter, VerticalLinkedList<T> listBefore)
@@ -198,7 +200,6 @@ namespace Commons.Collections
         private readonly int _firstIndex;
         private readonly int _maxDepth;
         private int _lastIndex => _firstIndex + Depth - 1;
-        private int _slack => _maxDepth - Depth;
 
         private void AddAfter(int index, T value) => AddBefore(index + 1, value);
 
@@ -231,8 +232,7 @@ namespace Commons.Collections
             return foundAt;
         }
 
-        private string Concat(IEnumerable things)
-        {
+        private static string Concat(IEnumerable things) {
             var sb = new StringBuilder();
             foreach (var thing in things) {
                 sb.Append(thing);

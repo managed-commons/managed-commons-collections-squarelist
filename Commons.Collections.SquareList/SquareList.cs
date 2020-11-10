@@ -7,23 +7,27 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Commons.Collections
 {
     public class SquareList<T> : IEnumerable<T> where T : IComparable
     {
+        public SquareList(IEnumerable<T> source) : this(source.Count(), source) {
+        }
+
         public SquareList(int capacity, IEnumerable<T> source) : this(capacity) {
             int count = _maxDepth;
             var newList = AddList(_lists, _bigArray, _maxDepth, 0);
             T lastValue = default;
             foreach (var value in source) {
                 if (Size > 0 && value.CompareTo(lastValue) < 0)
-                    throw new ArgumentException(nameof(source));
+                    throw new ArgumentException("Values aren't in ascending order", nameof(source));
                 lastValue = value;
                 newList.InsertAsLast(value);
                 Size++;
                 if (Size > capacity)
-                    throw new ArgumentException(nameof(source));
+                    throw new ArgumentException("More values than the specified capacity allows", nameof(source));
                 if (--count <= 0) {
                     newList = AddList(_lists, _bigArray, _maxDepth, Size);
                     count = _maxDepth;
@@ -48,7 +52,7 @@ namespace Commons.Collections
         public T Max => IsEmpty ? default(T) : _lastList.Last;
         public T Min => IsEmpty ? default(T) : _firstList.First;
         public int Ratio => (int)(Size * 100L / Capacity);
-        public int Size { get; private set; } = 0;
+        public int Size { get; private set; }
 
         public bool Contains(T value) => (!IsEmpty) && (BinarySearch(value) != null);
 
@@ -153,7 +157,7 @@ namespace Commons.Collections
         private readonly RemovedListsRepository<T> _removedLists;
         private T[] _bigArray;
         private List<VerticalLinkedList<T>> _lists;
-        private int _maxDepth = 0;
+        private int _maxDepth;
         private VerticalLinkedList<T> _firstList => IsEmpty ? null : _lists[0];
 
         private VerticalLinkedList<T> _lastList => IsEmpty ? null : _lists[^1];
@@ -191,12 +195,11 @@ namespace Commons.Collections
             return result >= 0 ? _lists[result] : null;
         }
 
-        private int CalcMaxDepth(int size) => (size > 0) ? Convert.ToInt32(Math.Ceiling(Math.Sqrt(size))) : 0;
+        private static int CalcMaxDepth(int size) => (size > 0) ? Convert.ToInt32(Math.Ceiling(Math.Sqrt(size))) : 0;
 
-        private string Dump(VerticalLinkedList<T> list) => (list == null) ? "!" : list.ToString();
+        private static string Dump(VerticalLinkedList<T> list) => (list == null) ? "!" : list.ToString();
 
-        private string DumpLists() => _lists.Count switch
-        {
+        private string DumpLists() => _lists.Count switch {
             0 => "",
             1 => $"{Dump(_firstList)}",
             _ => $"{Dump(_firstList)} ...  {Dump(_lastList)}",
