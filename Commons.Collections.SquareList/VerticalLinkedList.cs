@@ -36,7 +36,7 @@ namespace Commons.Collections
 
         internal int Depth { get; private set; }
 
-        internal T First => IsEmpty ? default(T) : _bigArray[_firstIndex];
+        internal T First => IsEmpty ? default : _bigArray[_firstIndex];
 
         internal int Id => _firstIndex / _maxDepth;
 
@@ -44,7 +44,7 @@ namespace Commons.Collections
 
         internal bool IsFull => Depth >= _maxDepth;
 
-        internal T Last => IsEmpty ? default(T) : _bigArray[_lastIndex];
+        internal T Last => IsEmpty ? default : _bigArray[_lastIndex];
 
         internal void Clear() => Depth = 0;
 
@@ -255,7 +255,7 @@ namespace Commons.Collections
         private T InnerRemove(int index)
         {
             if (IsEmpty || index < _firstIndex || index > _lastIndex)
-                return default(T);
+                return default;
             var value = _bigArray[index];
             for (int i = index; i <= _lastIndex; i++)
                 _bigArray[i] = _bigArray[i + 1];

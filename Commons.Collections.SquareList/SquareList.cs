@@ -49,8 +49,8 @@ namespace Commons.Collections
 
         public int Capacity { get; private set; }
         public bool IsEmpty => Size <= 0;
-        public T Max => IsEmpty ? default(T) : _lastList.Last;
-        public T Min => IsEmpty ? default(T) : _firstList.First;
+        public T Max => IsEmpty ? default : _lastList.Last;
+        public T Min => IsEmpty ? default : _firstList.First;
         public int Ratio => (int)(Size * 100L / Capacity);
         public int Size { get; private set; }
 
@@ -170,6 +170,10 @@ namespace Commons.Collections
             return newList;
         }
 
+        private static int CalcMaxDepth(int size) => (size > 0) ? Convert.ToInt32(Math.Ceiling(Math.Sqrt(size))) : 0;
+
+        private static string Dump(VerticalLinkedList<T> list) => (list == null) ? "!" : list.ToString();
+
         private VerticalLinkedList<T> AddListAtHead() {
             var endList = new VerticalLinkedList<T>(_bigArray, _maxDepth, 0);
             _lists.Add(endList);
@@ -194,10 +198,6 @@ namespace Commons.Collections
             var result = InternalBinarySearch(value, 0, _lists.Count - 1, true);
             return result >= 0 ? _lists[result] : null;
         }
-
-        private static int CalcMaxDepth(int size) => (size > 0) ? Convert.ToInt32(Math.Ceiling(Math.Sqrt(size))) : 0;
-
-        private static string Dump(VerticalLinkedList<T> list) => (list == null) ? "!" : list.ToString();
 
         private string DumpLists() => _lists.Count switch {
             0 => "",
