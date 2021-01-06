@@ -31,15 +31,11 @@
         <Exec ConsoleToMSBuild="true" Command="$(PushCommand)" IgnoreExitCode="true" IgnoreStandardErrorWarningFormat="true" StandardErrorImportance="low" StandardOutputImportance="low">
             <Output PropertyName="PushOutput" TaskParameter="ConsoleOutput" />
         </Exec>
-        <Message Importance="high" Text="Pushed $(LatestPackage) to GitHub" Condition="!$([System.Text.RegularExpressions.Regex]::IsMatch('$(PushOutput)', 'already exists'))" />
-        <Warning Code="NUGET" Text="Didn't push $(LatestPackage) to GitHub - Already there" Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(PushOutput)', 'already exists'))" />
+        <PropertyGroup>
+			<VersionAlreadyPushed>$([System.Text.RegularExpressions.Regex]::IsMatch('$(PushOutput)', 'already exists'))</VersionAlreadyPushed>
+        </PropertyGroup>
+        <Message Importance="high" Text="Pushed $(LatestPackage) to GitHub" Condition="!$(VersionAlreadyPushed)" />
+        <Warning Code="NUGET" Text="Didn't push $(LatestPackage) to GitHub - Already there" Condition="$(VersionAlreadyPushed)" />
     </Target>
     
-    <ItemGroup>
-      <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
-    </ItemGroup>
-
 </Project>
