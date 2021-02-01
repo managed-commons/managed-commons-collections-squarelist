@@ -12,8 +12,7 @@ namespace Commons.Collections
 {
     internal class RemovedListsRepository<T> where T : IComparable
     {
-        public override string ToString()
-        {
+        public override string ToString() {
             var sb = new StringBuilder("{");
             foreach (var key in _lists.Keys)
                 sb.Append($" {key}");
@@ -21,16 +20,14 @@ namespace Commons.Collections
             return sb.ToString();
         }
 
-        internal void Add(VerticalLinkedList<T> list)
-        {
+        internal void Add(VerticalLinkedList<T> list) {
             list.Clear();
             _lists.Add(list.Id, list);
         }
 
         internal void Clear() => _lists.Clear();
 
-        internal VerticalLinkedList<T> Recover(int id)
-        {
+        internal VerticalLinkedList<T> Recover(int id) {
             if (!_lists.ContainsKey(id))
                 return null;
             var unremoved = _lists[id];

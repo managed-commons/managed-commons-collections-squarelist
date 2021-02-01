@@ -199,7 +199,8 @@ namespace Commons.Collections
             return result >= 0 ? _lists[result] : null;
         }
 
-        private string DumpLists() => _lists.Count switch {
+        private string DumpLists() => _lists.Count switch
+        {
             0 => "",
             1 => $"{Dump(_firstList)}",
             _ => $"{Dump(_firstList)} ...  {Dump(_lastList)}",

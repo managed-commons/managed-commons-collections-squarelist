@@ -20,16 +20,14 @@ namespace Commons.Collections
 
         public override string ToString() => $"#{Id} " + (IsEmpty ? "[]" : $"^{Depth} [{Concat(this.Take(10))}{(Depth > 10 ? " ..." : "")}]");
 
-        internal VerticalLinkedList(T[] bigArray, int maxDepth, int firstIndex)
-        {
+        internal VerticalLinkedList(T[] bigArray, int maxDepth, int firstIndex) {
             _bigArray = bigArray;
             _maxDepth = maxDepth;
             _firstIndex = firstIndex;
             Depth = 0;
         }
 
-        internal VerticalLinkedList(T[] bigArray, int maxDepth, int firstIndex, T Value) : this(bigArray, maxDepth, firstIndex)
-        {
+        internal VerticalLinkedList(T[] bigArray, int maxDepth, int firstIndex, T Value) : this(bigArray, maxDepth, firstIndex) {
             Depth = 1;
             _bigArray[_firstIndex] = Value;
         }
@@ -50,8 +48,7 @@ namespace Commons.Collections
 
         internal bool Contains(T value) => InRange(value) && BinarySearch(value) >= 0;
 
-        internal VerticalLinkedList<T> CopyTo(T[] newArray, int newMaxDepth, int firstIndex)
-        {
+        internal VerticalLinkedList<T> CopyTo(T[] newArray, int newMaxDepth, int firstIndex) {
             var newList = new VerticalLinkedList<T>(newArray, newMaxDepth, firstIndex);
             var index = _firstIndex;
             for (int i = Depth; i > 0; i--)
@@ -60,8 +57,7 @@ namespace Commons.Collections
             return newList;
         }
 
-        internal int Count(T value)
-        {
+        internal int Count(T value) {
             lock (this) {
                 if (!InRange(value))
                     return 0;
@@ -80,8 +76,7 @@ namespace Commons.Collections
             }
         }
 
-        internal int DeleteWhere(Func<T, bool> predicate)
-        {
+        internal int DeleteWhere(Func<T, bool> predicate) {
             int removed = 0;
             var next = _firstIndex;
             for (int i = Depth; i > 0; i--) {
@@ -97,8 +92,7 @@ namespace Commons.Collections
 
         internal bool InRange(T value) => (!IsEmpty) && First.CompareTo(value) <= 0 && Last.CompareTo(value) >= 0;
 
-        internal void Insert(T value)
-        {
+        internal void Insert(T value) {
             CheckCapacity();
             if (IsEmpty) {
                 _bigArray[_firstIndex] = value;
@@ -132,8 +126,7 @@ namespace Commons.Collections
                 throw new InvalidOperationException("Can't add any more values!");
         }
 
-        internal void OpenSpaceAndInsert(T value, VerticalLinkedList<T> listAfter, VerticalLinkedList<T> listBefore)
-        {
+        internal void OpenSpaceAndInsert(T value, VerticalLinkedList<T> listAfter, VerticalLinkedList<T> listBefore) {
             if (!IsFull)
                 throw new InvalidOperationException();
             var slot = WhereToInsert(value);
@@ -154,8 +147,7 @@ namespace Commons.Collections
             _bigArray[slot] = value;
         }
 
-        internal void Receive(VerticalLinkedList<T> from)
-        {
+        internal void Receive(VerticalLinkedList<T> from) {
             if (from == null)
                 throw new ArgumentNullException(nameof(from));
             int delta = from._firstIndex;
@@ -165,8 +157,7 @@ namespace Commons.Collections
             from.Depth = 0;
         }
 
-        internal int Remove(T value, bool removeAll)
-        {
+        internal int Remove(T value, bool removeAll) {
             lock (this) {
                 if (!Contains(value))
                     return 0;
@@ -203,16 +194,14 @@ namespace Commons.Collections
 
         private void AddAfter(int index, T value) => AddBefore(index + 1, value);
 
-        private void AddBefore(int index, T value)
-        {
+        private void AddBefore(int index, T value) {
             for (int i = _lastIndex; i >= index; i--)
                 _bigArray[i + 1] = _bigArray[i];
             _bigArray[index] = value;
             Depth++;
         }
 
-        private int BinarySearch(T value)
-        {
+        private int BinarySearch(T value) {
             int foundAt = -1;
             var bottom = _firstIndex;
             var top = _lastIndex;
@@ -243,8 +232,7 @@ namespace Commons.Collections
             return sb.ToString();
         }
 
-        private IEnumerator<T> ImplementedEnumerator()
-        {
+        private IEnumerator<T> ImplementedEnumerator() {
             if (IsEmpty)
                 yield break;
             var next = _firstIndex;
@@ -252,8 +240,7 @@ namespace Commons.Collections
                 yield return _bigArray[next++];
         }
 
-        private T InnerRemove(int index)
-        {
+        private T InnerRemove(int index) {
             if (IsEmpty || index < _firstIndex || index > _lastIndex)
                 return default;
             var value = _bigArray[index];
@@ -263,8 +250,7 @@ namespace Commons.Collections
             return value;
         }
 
-        private int WhereToInsert(T value)
-        {
+        private int WhereToInsert(T value) {
             var up = _firstIndex;
             var down = _lastIndex;
             for (int i = Depth; i > 0; i--) {
