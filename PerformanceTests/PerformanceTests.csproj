@@ -19,6 +19,8 @@
         <OutputType>Exe</OutputType>
         <PackageId>PerformanceTests</PackageId>
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
+        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+        <AnalysisLevel>preview</AnalysisLevel>
     </PropertyGroup>
 
     <ItemGroup>
