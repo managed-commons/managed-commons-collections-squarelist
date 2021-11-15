@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <LangVersion>preview</LangVersion>
-        <TargetFrameworks>netstandard2.1;net5.0;net6.0</TargetFrameworks>
+        <TargetFrameworks>netstandard1.0;netstandard2.1;net5.0;net6.0</TargetFrameworks>
         <AssemblyName>Commons.Collections.SquareList</AssemblyName>
         <OutputType>Library</OutputType>
         <RootNamespace>Commons.Collections</RootNamespace>
@@ -15,7 +15,8 @@
         <Copyright>Copyright © 2016-2021 Rafael 'Monoman' Teixeira</Copyright>
         <PackageTags>Collections Ordered</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <Version>1.0.3</Version>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <Version>1.0.4</Version>
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
         <AnalysisLevel>6</AnalysisLevel>
@@ -24,7 +25,11 @@
 
     <ItemGroup>
         <Using Include="System.Collections"/>
+        <Using Remove="System.Net.Http"/>
+        <None Include="..\README.md" Pack="true" PackagePath="\"/>
+        <None Include="..\LICENSE" Pack="true" PackagePath="\"/>
     </ItemGroup>
+    
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <DefineConstants>DEBUG;TRACE</DefineConstants>

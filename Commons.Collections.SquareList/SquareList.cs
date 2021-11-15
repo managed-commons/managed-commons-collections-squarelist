@@ -155,7 +155,11 @@ public class SquareList<T> : IEnumerable<T> where T : IComparable
     private int _maxDepth;
     private VerticalLinkedList<T> _firstList => IsEmpty ? null : _lists[0];
 
+#if NETSTANDARD1_0
+    private VerticalLinkedList<T> _lastList => IsEmpty ? null : _lists[_lists.Count - 1];
+#else
     private VerticalLinkedList<T> _lastList => IsEmpty ? null : _lists[^1];
+#endif
 
     private int _width => _lists.Count;
 
