@@ -1,13 +1,15 @@
 // ******************************************************************************************************************************
 // ****
-// ****      Copyright (c) 2016-2020 Rafael 'Monoman' Teixeira
+// ****      Copyright (c) 2016-2021 Rafael 'Monoman' Teixeira
 // ****
 // ******************************************************************************************************************************
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Commons.Collections;
+
 using static System.Console;
 
 namespace PerformanceTests

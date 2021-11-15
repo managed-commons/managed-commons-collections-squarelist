@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <LangVersion>9</LangVersion>
-        <TargetFrameworks>netstandard2.1;net5.0</TargetFrameworks>
+        <LangVersion>preview</LangVersion>
+        <TargetFrameworks>netstandard2.1;net5.0;net6.0</TargetFrameworks>
         <AssemblyName>Commons.Collections.SquareList</AssemblyName>
         <OutputType>Library</OutputType>
         <RootNamespace>Commons.Collections</RootNamespace>
@@ -10,16 +10,21 @@
         <PackageProjectUrl>https://github.com/managed-commons</PackageProjectUrl>
         <RepositoryUrl>https://github.com/managed-commons/managed-commons-collections-squarelist</RepositoryUrl>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageReleaseNotes>Packaging for NETSTANDARD2.1 and NET5</PackageReleaseNotes>
+        <PackageReleaseNotes>Packaging for $(TargetFrameworks)</PackageReleaseNotes>
         <Description>Managed Commons library for SquareList specialized collection.</Description>
-        <Copyright>Copyright © 2016-2020 Rafael 'Monoman' Teixeira</Copyright>
+        <Copyright>Copyright © 2016-2021 Rafael 'Monoman' Teixeira</Copyright>
         <PackageTags>Collections Ordered</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <Version>1.0.2</Version>
+        <Version>1.0.3</Version>
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-        <AnalysisLevel>preview</AnalysisLevel>
+        <AnalysisLevel>6</AnalysisLevel>
+        <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
+
+    <ItemGroup>
+        <Using Include="System.Collections"/>
+    </ItemGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <DefineConstants>DEBUG;TRACE</DefineConstants>
