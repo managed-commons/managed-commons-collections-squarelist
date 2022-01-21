@@ -12,14 +12,14 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageReleaseNotes>Packaging for $(TargetFrameworks)</PackageReleaseNotes>
         <Description>Managed Commons library for SquareList specialized collection.</Description>
-        <Copyright>Copyright © 2016-2021 Rafael 'Monoman' Teixeira</Copyright>
+        <Copyright>Copyright © 2016-2022 Rafael 'Monoman' Teixeira</Copyright>
         <PackageTags>Collections Ordered</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <Version>1.0.4</Version>
+        <Version>1.0.5</Version>
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-        <AnalysisLevel>6</AnalysisLevel>
+        <AnalysisLevel>preview</AnalysisLevel>
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
