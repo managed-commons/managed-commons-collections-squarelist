@@ -188,11 +188,6 @@ public class SquareList<T> : IEnumerable<T> where T : IComparable
         return null;
     }
 
-    private void AddNewList(T value) {
-        _lists.Add(new VerticalLinkedList<T>(_bigArray, _maxDepth, _lists.Count * _maxDepth, value));
-        Size++;
-    }
-
     private VerticalLinkedList<T> BinarySearch(T value) {
         var result = InternalBinarySearch(value, 0, _lists.Count - 1, true);
         return result >= 0 ? _lists[result] : null;
@@ -224,13 +219,6 @@ public class SquareList<T> : IEnumerable<T> where T : IComparable
     private int FindFirstList(T value, int m) {
         while (--m >= 0 && _lists[m].Contains(value)) { }
         return m + 1;
-    }
-
-    private VerticalLinkedList<T> FindFirstListWithContent() {
-        for (int index = 1; index < _lists.Count; index++)
-            if (!_lists[index].IsEmpty)
-                return _lists[index];
-        return null;
     }
 
     private VerticalLinkedList<T> FindListToInsertInto(T value) {

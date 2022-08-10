@@ -11,7 +11,7 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageReleaseNotes>Modernizing...</PackageReleaseNotes>
         <Description>Managed Commons library for SquareList specialized collection.</Description>
-        <Copyright>Copyright © 2016-2020 Rafael 'Monoman' Teixeira</Copyright>
+        <Copyright>Copyright © 2016-2022 Rafael 'Monoman' Teixeira</Copyright>
         <PackageTags>Collections Ordered</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>

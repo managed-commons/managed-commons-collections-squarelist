@@ -139,9 +139,7 @@ internal class VerticalLinkedList<T> : IEnumerable<T> where T : IComparable
         _bigArray[slot] = value;
     }
 
-    internal void Receive(VerticalLinkedList<T> from) {
-        if (from == null)
-            throw new ArgumentNullException(nameof(from));
+    internal void Receive(VerticalLinkedList<T> from!!) {
         int delta = from._firstIndex;
         for (int i = from.Depth - 1; i >= 0; i--)
             _bigArray[i] = _bigArray[i + delta];
