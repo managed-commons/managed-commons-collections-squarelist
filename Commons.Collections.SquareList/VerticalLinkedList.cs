@@ -74,7 +74,7 @@ internal class VerticalLinkedList<T> : IEnumerable<T> where T : IComparable
         for (int i = Depth; i > 0; i--) {
             var value = _bigArray[next];
             if (predicate(value)) {
-                InnerRemove(next);
+                _ = InnerRemove(next);
                 removed++;
             } else
                 next++;
@@ -139,7 +139,8 @@ internal class VerticalLinkedList<T> : IEnumerable<T> where T : IComparable
         _bigArray[slot] = value;
     }
 
-    internal void Receive(VerticalLinkedList<T> from!!) {
+    internal void Receive(VerticalLinkedList<T> from) {
+        if (from is null) throw new ArgumentNullException(nameof(from));
         int delta = from._firstIndex;
         for (int i = from.Depth - 1; i >= 0; i--)
             _bigArray[i] = _bigArray[i + delta];
@@ -163,7 +164,7 @@ internal class VerticalLinkedList<T> : IEnumerable<T> where T : IComparable
                     var start = up;
                     while (upCompare == 0) {
                         removed++;
-                        InnerRemove(up);
+                        _ = InnerRemove(up);
                         if ((!removeAll) || (--i <= 0))
                             break;
                         upCompare = _bigArray[up].CompareTo(value);
