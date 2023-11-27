@@ -124,7 +124,7 @@ internal class VerticalLinkedList<T> : IEnumerable<T> where T : IComparable
         var slot = WhereToInsert(value);
         if (listAfter != null && listBefore != null && listAfter._lastIndex - slot < slot - listBefore._lastIndex)
             listBefore = null;
-        if (listBefore == null) {
+        if (listBefore is null) {
             for (int i = listAfter._lastIndex; i >= slot; i--)
                 _bigArray[i + 1] = _bigArray[i];
             listAfter.Depth += 1;
@@ -137,15 +137,6 @@ internal class VerticalLinkedList<T> : IEnumerable<T> where T : IComparable
                 _bigArray[i] = _bigArray[i + 1];
         }
         _bigArray[slot] = value;
-    }
-
-    internal void Receive(VerticalLinkedList<T> from) {
-        if (from is null) throw new ArgumentNullException(nameof(from));
-        int delta = from._firstIndex;
-        for (int i = from.Depth - 1; i >= 0; i--)
-            _bigArray[i] = _bigArray[i + delta];
-        Depth = from.Depth;
-        from.Depth = 0;
     }
 
     internal int Remove(T value, bool removeAll) {

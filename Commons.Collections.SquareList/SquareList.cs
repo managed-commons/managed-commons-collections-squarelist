@@ -35,7 +35,7 @@ public class SquareList<T> : IEnumerable<T> where T : IComparable
         _maxDepth = CalcMaxDepth(capacity);
         Capacity = _maxDepth * (_maxDepth + 1);
         _bigArray = new T[Capacity];
-        _lists = new List<VerticalLinkedList<T>>();
+        _lists = [];
         _removedLists = new RemovedListsRepository<T>();
     }
 
@@ -121,7 +121,7 @@ public class SquareList<T> : IEnumerable<T> where T : IComparable
 
     public void ShrinkWithSlackOf(int slack) {
         if (slack < 0)
-            throw new ArgumentOutOfRangeException(nameof(slack));
+            throw new ArgumentOutOfRangeException(nameof(slack), slack, $"Parameter {nameof(slack) ?? "?"} must be non-negative: {slack}");
         var newMaxDepth = CalcMaxDepth(Size) + slack;
         if (newMaxDepth != _maxDepth) {
             var newCapacity = newMaxDepth * (newMaxDepth + 1);

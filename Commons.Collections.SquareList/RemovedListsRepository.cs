@@ -16,12 +16,14 @@ internal class RemovedListsRepository<T> where T : IComparable
     internal void Clear() => _lists.Clear();
 
     internal VerticalLinkedList<T> Recover(int id) {
-        if (!_lists.ContainsKey(id))
-            return null;
-        var unremoved = _lists[id];
-        _lists.Remove(id);
-        return unremoved;
+        if (_lists.TryGetValue(id, out var value)) {
+            var unremoved = value;
+            _lists.Remove(id);
+            return unremoved;
+        }
+
+        return null;
     }
 
-    private readonly Dictionary<int, VerticalLinkedList<T>> _lists = new();
+    private readonly Dictionary<int, VerticalLinkedList<T>> _lists = [];
 }

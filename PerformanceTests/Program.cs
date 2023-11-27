@@ -85,16 +85,16 @@ namespace PerformanceTests
             results.slMax = Time(() => DoAMillionTimes(() => dummy = sl.Keys[sl.Keys.Count - 1]));
             SquareList<int> sql = null;
             results.sqlCre = Time(() => sql = new SquareList<int>(size, Range(size)));
-            if (!sql.Take(10).SequenceEqual(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }))
+            if (!sql.Take(10).SequenceEqual(_listWithTenNumbers))
                 throw new InvalidOperationException();
             results.sqlDel = Time(() => DoAThousandTimes((i) => sql.Delete(i), size));
             if (sql.Size != size - SmallerRepetition)
                 throw new InvalidOperationException();
             results.sqlIns = Time(() => DoAThousandTimes((i) => sql.Insert(i), size));
-            if (!sql.Take(10).SequenceEqual(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }))
+            if (!sql.Take(10).SequenceEqual(_listWithTenNumbers))
                 throw new InvalidOperationException();
             results.sqlDupIns = Time(() => DoAHundredTimes((i) => sql.Insert(i), size));
-            if (!sql.Take(2).SequenceEqual(new int[] { 1, 1 }))
+            if (!sql.Take(2).SequenceEqual(_listOneAndOne))
                 throw new InvalidOperationException();
             results.sqlSearch = Time(() => DoAThousandTimes((i) => sql.Contains(i), size));
             results.sqlCutInHalf = Time(() => sql.DeleteBelow(size / 2));
@@ -108,6 +108,9 @@ namespace PerformanceTests
 
             return results;
         }
+
+        private static readonly int[] _listWithTenNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        private static readonly int[] _listOneAndOne = [1, 1];
 
         private static int Time(Action action) {
             var start = DateTimeOffset.UtcNow;
