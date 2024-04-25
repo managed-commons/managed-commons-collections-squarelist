@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <LangVersion>12</LangVersion>
+        <LangVersion>preview</LangVersion>
         <TargetFrameworks>netstandard1.0;netstandard2.1;net6.0;net8.0</TargetFrameworks>
         <AssemblyName>Commons.Collections.SquareList</AssemblyName>
         <OutputType>Library</OutputType>
@@ -12,14 +12,14 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageReleaseNotes>Packaging for $(TargetFrameworks)</PackageReleaseNotes>
         <Description>Managed Commons library for SquareList specialized collection.</Description>
-        <Copyright>Copyright © 2016-2023 Rafael 'Monoman' Teixeira</Copyright>
+        <Copyright>Copyright © 2016-2024 Rafael 'Monoman' Teixeira</Copyright>
         <PackageTags>Collections Ordered</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <Version>1.0.7</Version>
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-        <AnalysisLevel>12</AnalysisLevel>
+        <AnalysisLevel>preview</AnalysisLevel>
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 

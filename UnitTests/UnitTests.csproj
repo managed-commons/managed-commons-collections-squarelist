@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <LangVersion>12</LangVersion>
+        <LangVersion>preview</LangVersion>
         <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
         <IsPackable>false</IsPackable>
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
@@ -12,13 +12,13 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageReleaseNotes>Modernizing...</PackageReleaseNotes>
         <Description>Managed Commons library for SquareList specialized collection.</Description>
-        <Copyright>Copyright © 2016-2023 Rafael 'Monoman' Teixeira</Copyright>
+        <Copyright>Copyright © 2016-2024 Rafael 'Monoman' Teixeira</Copyright>
         <PackageTags>Collections Ordered</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-        <AnalysisLevel>12</AnalysisLevel>
+        <AnalysisLevel>preview</AnalysisLevel>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
