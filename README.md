@@ -17,19 +17,21 @@ His implementation in C used circular doubly-linked lists of doubly-linked lists
 The SquareList is a structure that is particularly useful in applications that frequently require the current minimum and maximum values, as they both can be found in constant time, even accounting for deletions.
 This implementation performs insert/delete/find operations within a worst-case running time of O(sqrt(n)) [In truth O(n) for inserts]. Values are always kept in ascending order, so traversing it in that order is natural and performant.
 
-__Commons.Collections.SquareList 1.0.6 is available at Nuget:__ [Commons.Collections.SquareList](https://www.nuget.org/packages/Commons.Collections.SquareList/).
+__Commons.Collections.SquareList 1.0.8 is available at Nuget:__ [Commons.Collections.SquareList](https://www.nuget.org/packages/Commons.Collections.SquareList/).
 
 Targets in the package
 ---
 
-|_Release_|_.NET Standard 1.0_|_.NET Standard 2.1_|_.NET 6.0_|
-|--------:|------------------:|------------------:|---------:|
-|   1.0.0 | ✔ |   |   |
-|   1.0.2 |    | ✔ |   |
-|   1.0.3 |    | ✔ | ✔ |
-|   1.0.4 | ✔ | ✔ | ✔ |
-|   1.0.5 | ✔ | ✔ | ✔ |
-|   1.0.6 | ✔ | ✔ | ✔ |
+|_Release_|_.NET Standard 1.0_|_.NET Standard 2.1_|_.NET 6.0_|_.NET 8.0_|
+|--------:|------------------:|------------------:|---------:|---------:|
+|   1.0.0 | ✔ |   |   |   |
+|   1.0.2 |    | ✔ |   |   |
+|   1.0.3 |    | ✔ | ✔ |   |
+|   1.0.4 | ✔ | ✔ | ✔ |   |
+|   1.0.5 | ✔ | ✔ | ✔ |   |
+|   1.0.6 | ✔ | ✔ | ✔ |   |
+|   1.0.7 | ✔ | ✔ | ✔ | ✔ |
+|   1.0.8 | ✔ | ✔ | ✔ | ✔ |
 
 Performance
 ===

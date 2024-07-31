@@ -16,7 +16,7 @@
         <PackageTags>Collections Ordered</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <Version>1.0.7</Version>
+        <Version>1.0.8</Version>
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
         <AnalysisLevel>preview</AnalysisLevel>
@@ -48,5 +48,50 @@
         <Message Importance="high" Text="Pushed $(LatestPackage) to Nuget" Condition="!$(VersionAlreadyPushed)" />
         <Message Importance="high" Text="Didn't push $(LatestPackage) to Nuget - Already there" Condition="$(VersionAlreadyPushed)" />
     </Target>
+
+    <Target Name="UpdateREADME" BeforeTargets="Build">
+        <ItemGroup>
+            <ReadMe Include="..\README.md" />
+        </ItemGroup>
+        <PropertyGroup>
+            <VersionPattern>__Commons.Collections.SquareList \d+\.\d+\.\d+</VersionPattern>
+            <VersionResult>__Commons.Collections.SquareList $(Version)</VersionResult>
+        </PropertyGroup>
+        <RegexTemplating InputFile="@(ReadMe)" Pattern="$(VersionPattern)" NewValue="$(VersionResult)"/>
+    </Target>
+
+    <UsingTask TaskName="RegexTemplating"
+		TaskFactory="RoslynCodeTaskFactory"
+		AssemblyFile="$(MSBuildBinPath)\Microsoft.Build.Tasks.Core.dll">
+        <ParameterGroup>
+            <InputFile ParameterType="System.String" Required="true" />
+            <Pattern ParameterType="System.String" Required="true" />
+            <NewValue ParameterType="System.String" Required="true" />
+            <OutputFile ParameterType="System.String" />
+            <Verbose ParameterType="System.Boolean" />
+        </ParameterGroup>
+        <Task>
+            <Using Namespace="System" />
+            <Using Namespace="System.IO" />
+            <Using Namespace="System.Text" />
+            <Using Namespace="System.Text.RegularExpressions" />
+            <Code Type="Fragment" Language="C#">
+                <![CDATA[
+          if (File.Exists(InputFile)) {
+              if (string.IsNullOrWhiteSpace(OutputFile))
+                OutputFile = InputFile;
+              var contentBefore = File.ReadAllText(InputFile, Encoding.UTF8);
+              var contentAfter = Regex.Replace(contentBefore, Pattern, NewValue);
+              if (contentAfter != contentBefore || OutputFile != InputFile) {
+                File.WriteAllBytes(OutputFile, Encoding.UTF8.GetBytes(contentAfter));
+                if (Verbose)
+                  Log.LogMessageFromText($"Replaced the pattern '{Pattern}' by the value '{NewValue}' on '{OutputFile}'!", MessageImportance.High);
+              }
+          } else
+            Log.LogMessageFromText($"InputFile '{InputFile}' not found!", MessageImportance.High);
+        ]]>
+            </Code>
+        </Task>
+    </UsingTask>
     
 </Project>
