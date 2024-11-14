@@ -82,7 +82,7 @@ internal class VerticalLinkedList<T> : IEnumerable<T> where T : IComparable
         return removed;
     }
 
-    internal bool InRange(T value) => (!IsEmpty) && First.CompareTo(value) <= 0 && Last.CompareTo(value) >= 0;
+    internal bool InRange(T value) => (!IsEmpty) && First!.CompareTo(value) <= 0 && Last!.CompareTo(value) >= 0;
 
     internal void Insert(T value) {
         CheckCapacity();
@@ -120,11 +120,13 @@ internal class VerticalLinkedList<T> : IEnumerable<T> where T : IComparable
 
     internal void OpenSpaceAndInsert(T value, VerticalLinkedList<T> listAfter, VerticalLinkedList<T> listBefore) {
         if (!IsFull)
-            throw new InvalidOperationException();
+            throw new InvalidOperationException("It is full");
         var slot = WhereToInsert(value);
         if (listAfter != null && listBefore != null && listAfter._lastIndex - slot < slot - listBefore._lastIndex)
             listBefore = null;
         if (listBefore is null) {
+            if (listAfter is null)
+                throw new InvalidOperationException("Both lists are null");
             for (int i = listAfter._lastIndex; i >= slot; i--)
                 _bigArray[i + 1] = _bigArray[i];
             listAfter.Depth += 1;
@@ -234,4 +236,6 @@ internal class VerticalLinkedList<T> : IEnumerable<T> where T : IComparable
         }
         throw new ArgumentOutOfRangeException(nameof(value));
     }
+
+    public override string ToString() => GetType().FullName ?? nameof(VerticalLinkedList<T>);
 }

@@ -82,7 +82,7 @@ public class SquareList<T> : IEnumerable<T> where T : IComparable
                 Size -= removed;
             if (IsEmpty)
                 return;
-            while (!_firstList.IsEmpty && _firstList.First.CompareTo(value) < 0) {
+            while (!_firstList.IsEmpty && _firstList.First!.CompareTo(value) < 0) {
                 _firstList.RemoveFirst();
                 Size--;
             }
@@ -155,11 +155,7 @@ public class SquareList<T> : IEnumerable<T> where T : IComparable
     private int _maxDepth;
     private VerticalLinkedList<T> _firstList => IsEmpty ? null : _lists[0];
 
-#if NETSTANDARD1_0
-    private VerticalLinkedList<T> _lastList => IsEmpty ? null : _lists[_lists.Count - 1];
-#else
     private VerticalLinkedList<T> _lastList => IsEmpty ? null : _lists[^1];
-#endif
 
     private int _width => _lists.Count;
 
@@ -171,7 +167,7 @@ public class SquareList<T> : IEnumerable<T> where T : IComparable
 
     private static int CalcMaxDepth(int size) => (size > 0) ? Convert.ToInt32(Math.Ceiling(Math.Sqrt(size))) : 0;
 
-    private static string Dump(VerticalLinkedList<T> list) => (list == null) ? "!" : list.ToString();
+    private static string Dump(VerticalLinkedList<T> list) => (list is null) ? "!" : list.ToString();
 
     private VerticalLinkedList<T> AddListAtHead() {
         var endList = new VerticalLinkedList<T>(_bigArray, _maxDepth, 0);
@@ -180,7 +176,7 @@ public class SquareList<T> : IEnumerable<T> where T : IComparable
     }
 
     private VerticalLinkedList<T> AddListAtTail() {
-        if (_lastList.Id < _maxDepth) {
+        if (_lastList is not null && _lastList.Id < _maxDepth) {
             var endList = new VerticalLinkedList<T>(_bigArray, _maxDepth, (_lastList.Id + 1) * _maxDepth);
             _lists.Add(endList);
             return endList;
@@ -226,7 +222,7 @@ public class SquareList<T> : IEnumerable<T> where T : IComparable
             return UnremoveList(0, 0) ?? AddListAtHead();
         if (Size + 1 > Capacity)
             Enlarge();
-        if (_lastList.Last.CompareTo(value) >= 0) {
+        if (_lastList.Last!.CompareTo(value) >= 0) {
             int listIndex = WhereToInsert(value);
             if (listIndex >= 0) {
                 var list = _lists[listIndex];
@@ -269,17 +265,20 @@ public class SquareList<T> : IEnumerable<T> where T : IComparable
             return -1;
         int m = (i + j) / 2;
         var list = _lists[m];
+        if (list is null || list.IsEmpty)
+            throw new InvalidOperationException("Empty list can't be compared");
+        var last = list.Last!;
         if (exact) {
             if (list.Contains(value))
                 return FindFirstList(value, m);
         } else {
-            if (list.Last.CompareTo(value) >= 0) {
-                if ((m <= 0) || (_lists[m - 1].Last.CompareTo(value) < 0)) {
+            if (last.CompareTo(value) >= 0) {
+                if ((m <= 0) || (!_lists[m - 1].IsEmpty && _lists[m - 1].Last!.CompareTo(value) < 0)) {
                     return m;
                 }
             }
         }
-        if (list.Last.CompareTo(value) > 0)
+        if (last.CompareTo(value) > 0)
             j = m - 1;
         else
             i = m + 1;
@@ -299,7 +298,7 @@ public class SquareList<T> : IEnumerable<T> where T : IComparable
     }
 
     private bool RemoveListIfEmpty(VerticalLinkedList<T> list) {
-        if (list != null && list.IsEmpty) {
+        if (list is not null && list.IsEmpty) {
             RemoveList(list);
             return true;
         }
@@ -308,7 +307,7 @@ public class SquareList<T> : IEnumerable<T> where T : IComparable
 
     private VerticalLinkedList<T> UnremoveList(int id, int at) {
         var list = _removedLists.Recover(id);
-        if (list != null)
+        if (list is not null)
             _lists.Insert(at, list);
         return list;
     }

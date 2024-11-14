@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <LangVersion>preview</LangVersion>
-        <TargetFrameworks>netstandard1.0;netstandard2.1;net6.0;net8.0</TargetFrameworks>
+        <TargetFrameworks>netstandard2.1;net8.0;net9.0</TargetFrameworks>
         <AssemblyName>Commons.Collections.SquareList</AssemblyName>
         <OutputType>Library</OutputType>
         <RootNamespace>Commons.Collections</RootNamespace>
@@ -16,7 +16,7 @@
         <PackageTags>Collections Ordered</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <Version>1.0.8</Version>
+        <Version>1.1.1</Version>
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
         <AnalysisLevel>preview</AnalysisLevel>

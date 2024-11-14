@@ -19,20 +19,22 @@ namespace PerformanceTests
         public const int SmallerRepetition = 1_000;
 
         public static void Main(string[] args) {
-            WriteLine("Performance tests");
+            WriteLine("""
+                Performance tests
 
-            WriteLine("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-            WriteLine("|============|              SortedList                                         |              SquareList                                                                          |");
-            WriteLine("|Initial Size| Creation |  Deletes | Inserts  |  Searchs |   Min    |   Max    | Creation |  Deletes | Inserts  | Reinserts|  Searchs |   Min    |   Max    | CutInHalf| Shrink   |");
-            WriteLine("| (elements) |   (ms)   |   (ms)   |   (ms)   |   (ms)   |   (ms)   |   (ms)   |   (ms)   |   (ms)   |   (ms)   |  (ms)    |   (ms)   |   (ms)   |   (ms)   |  (ms)    |  (ms)    |");
-            WriteLine("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+
+                SortedList (all times in *ms*) [.NET 8.0]                                          SquareList (all times in *ms*) [.NET 8.0]
+                ---                                                                                ---
+
+                |Initial Size| Creation |  Deletes | Inserts  |  Searchs |   Min    |   Max    |   |Initial Size| Creation |  Deletes | Inserts  | Reinserts|  Searchs |   Min    |   Max    | CutInHalf| Shrink   |
+                |-----------:|---------:|---------:|---------:|---------:|---------:|---------:|   |-----------:|---------:|---------:|---------:|---------:|---------:|---------:|---------:|---------:|---------:|
+                """);
             var multiplier = Math.Sqrt(Math.Sqrt(10d));
             for (double sizef = 1000d; sizef <= 50_000_000d; sizef *= multiplier) {
                 int size = (int)Math.Ceiling(sizef);
                 var r = RunTestsFor(size);
-                WriteLine($"| {Pad(size, 10)} | {Pad(r.slCre)} | {Pad(r.slDel)} | {Pad(r.slIns)} | {Pad(r.slSearch)} | {Pad(r.slMin)} | {Pad(r.slMax)} | {Pad(r.sqlCre)} | {Pad(r.sqlDel)} | {Pad(r.sqlIns)} | {Pad(r.sqlDupIns)} | {Pad(r.sqlSearch)} | {Pad(r.sqlMin)} | {Pad(r.sqlMax)} | {Pad(r.sqlCutInHalf)} | {Pad(r.sqlShrink)} |");
+                WriteLine($"| {Pad(size, 10)} | {Pad(r.slCre)} | {Pad(r.slDel)} | {Pad(r.slIns)} | {Pad(r.slSearch)} | {Pad(r.slMin)} | {Pad(r.slMax)} |   | {Pad(size, 10)} | {Pad(r.sqlCre)} | {Pad(r.sqlDel)} | {Pad(r.sqlIns)} | {Pad(r.sqlDupIns)} | {Pad(r.sqlSearch)} | {Pad(r.sqlMin)} | {Pad(r.sqlMax)} | {Pad(r.sqlCutInHalf)} | {Pad(r.sqlShrink)} |");
             }
-            WriteLine("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
         }
 
         private static void Create(Action<int> action, int size) {
