@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFrameworks>netstandard2.1;net8.0;net9.0;net10.0</TargetFrameworks>
@@ -34,21 +34,6 @@
         <DefineConstants>DEBUG;TRACE</DefineConstants>
     </PropertyGroup>
     
-    <Target AfterTargets="Pack" Name="PushPackage" Condition="'$(OS)' == 'Windows_NT'">
-        <PropertyGroup>
-            <LatestPackage>$(PackageId).$(Version).nupkg</LatestPackage>
-            <PushCommand>dotnet nuget push $(PackageOutputAbsolutePath)$(LatestPackage) --skip-duplicate --force-english-output --source nuget.org</PushCommand>
-        </PropertyGroup>
-        <Exec ConsoleToMSBuild="true" Command="$(PushCommand)" IgnoreExitCode="true" IgnoreStandardErrorWarningFormat="true" StandardErrorImportance="low" StandardOutputImportance="low">
-            <Output PropertyName="PushOutput" TaskParameter="ConsoleOutput" />
-        </Exec>
-        <PropertyGroup>
-			<VersionAlreadyPushed>$([System.Text.RegularExpressions.Regex]::IsMatch('$(PushOutput)', 'already exists'))</VersionAlreadyPushed>
-        </PropertyGroup>
-        <Message Importance="high" Text="Pushed $(LatestPackage) to Nuget" Condition="!$(VersionAlreadyPushed)" />
-        <Message Importance="high" Text="Didn't push $(LatestPackage) to Nuget - Already there" Condition="$(VersionAlreadyPushed)" />
-    </Target>
-
     <Target Name="UpdateREADME" BeforeTargets="Build">
         <ItemGroup>
             <ReadMe Include="..\README.md" />

@@ -1,12 +1,14 @@
 <Project>
   <PropertyGroup>
       <LangVersion>preview</LangVersion>
-      <Version>1.1.2</Version>
+      <Version>1.1.4</Version>
       <Copyright>Copyright © 2016-2026 Rafael 'Monoman' Teixeira</Copyright>
       <Notes>
-          - Updated to .NET 10.0
-          - Updated test dependencies to latest versions.
-          - Better markdown headers for performance tests report.
+          - Added .NET 10.0 target framework
+          - Updated NUnit to 4.6.0 and NUnit.Analyzers to 4.13.0
+          - Add Directory.Build.props for common properties (specifically for packaging/versioning)
+          - Add Directory.Build.targets for packaging tasks
+          - Update README.md to reflect new version and packaging
       </Notes>
   </PropertyGroup>
 </Project>

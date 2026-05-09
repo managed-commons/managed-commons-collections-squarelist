@@ -1,0 +1,20 @@
+<Project>
+    <Target Name="TagSources" />
+
+    <Target Name="NugetOrg" DependsOnTargets="Pack" Condition="'$(OS)' == 'Windows_NT' and '$(Configuration)'=='Release' and '$(IsPackable)'=='true'">
+        <PropertyGroup>
+            <LatestPackage>$(PackageId).$(Version).nupkg</LatestPackage>
+            <PushCommand>dotnet nuget push $(PackageOutputAbsolutePath)$(LatestPackage) --skip-duplicate --force-english-output --source nuget.org</PushCommand>
+        </PropertyGroup>
+        <Exec ConsoleToMSBuild="true" Command="$(PushCommand)" IgnoreExitCode="true" IgnoreStandardErrorWarningFormat="true" StandardErrorImportance="high" StandardOutputImportance="low" ContinueOnError="false">
+            <Output PropertyName="PushOutput" TaskParameter="ConsoleOutput" />
+        </Exec>
+        <PropertyGroup>
+            <VersionAlreadyPushed>$([System.Text.RegularExpressions.Regex]::IsMatch('$(PushOutput)', 'already exists'))</VersionAlreadyPushed>
+            <ErrorOrWarn>$([System.Text.RegularExpressions.Regex]::IsMatch('$(PushOutput)', '([Ee]rror|[Ww]arn)'))</ErrorOrWarn>
+        </PropertyGroup>
+        <Message Importance="high" Text="Pushed $(LatestPackage) to Nuget" Condition="!$(VersionAlreadyPushed) and !$(ErrorOrWarn)" />
+        <Message Importance="high" Text="$(PushOutput)" Condition="$(ErrorOrWarn)" />
+        <Message Importance="high" Text="Didn't push $(LatestPackage) to Nuget - Already there" Condition="$(VersionAlreadyPushed)" />
+    </Target>
+</Project>
