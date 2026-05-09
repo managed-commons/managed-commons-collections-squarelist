@@ -1,6 +1,6 @@
 // ******************************************************************************************************************************
 // ****
-// ****      Copyright (c) 2016-2021 Rafael 'Monoman' Teixeira
+// ****      Copyright (c) 2016-2026 Rafael 'Monoman' Teixeira
 // ****
 // ******************************************************************************************************************************
 
@@ -32,17 +32,17 @@ public class UnitTestSquareList
         sl.Insert(18);
         sl.Insert(19);
         sl.Insert(20);
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(sl.Min, Is.EqualTo(1));
             Assert.That(sl.Max, Is.EqualTo(100));
             Assert.That(sl.Size, Is.EqualTo(24));
-        });
+        }
         sl.Delete(100);
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(sl.Min, Is.EqualTo(1));
             Assert.That(sl.Max, Is.EqualTo(93));
             Assert.That(sl.Size, Is.EqualTo(23));
-        });
+        }
     }
 
     [Test]
@@ -75,29 +75,29 @@ public class UnitTestSquareList
     public void TestContains() {
         var sl = new SquareList<int>();
         sl.Insert(13);
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(sl.Min, Is.EqualTo(13));
             Assert.That(sl.Max, Is.EqualTo(13));
-            Assert.That(sl.Contains(39), Is.EqualTo(false));
-            Assert.That(sl.Contains(13), Is.EqualTo(true));
-            Assert.That(sl.Contains(0), Is.EqualTo(false));
-        });
+            Assert.That(sl.Contains(39), Is.False);
+            Assert.That(sl.Contains(13), Is.True);
+            Assert.That(sl.Contains(0), Is.False);
+        }
     }
 
     [Test]
     public void TestDeleteOnEmpty() {
         var sl = new SquareList<int>();
-        Assert.Multiple(() => {
-            Assert.That(sl.Min, Is.EqualTo(0));
-            Assert.That(sl.Max, Is.EqualTo(0));
-            Assert.That(sl.Size, Is.EqualTo(0));
-        });
+        using (Assert.EnterMultipleScope()) {
+            Assert.That(sl.Min, Is.Zero);
+            Assert.That(sl.Max, Is.Zero);
+            Assert.That(sl.Size, Is.Zero);
+        }
         sl.Delete(13);
-        Assert.Multiple(() => {
-            Assert.That(sl.Min, Is.EqualTo(0));
-            Assert.That(sl.Max, Is.EqualTo(0));
-            Assert.That(sl.Size, Is.EqualTo(0));
-        });
+        using (Assert.EnterMultipleScope()) {
+            Assert.That(sl.Min, Is.Zero);
+            Assert.That(sl.Max, Is.Zero);
+            Assert.That(sl.Size, Is.Zero);
+        }
     }
 
     [Test]
@@ -105,31 +105,31 @@ public class UnitTestSquareList
         var sl = new SquareList<int>();
         sl.Insert(1);
         sl.Insert(23);
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(sl.Min, Is.EqualTo(1));
             Assert.That(sl.Max, Is.EqualTo(23));
             Assert.That(sl.Size, Is.EqualTo(2));
-        });
+        }
         sl.Delete(13);
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(sl.Min, Is.EqualTo(1));
             Assert.That(sl.Max, Is.EqualTo(23));
             Assert.That(sl.Size, Is.EqualTo(2));
-        });
+        }
     }
 
     [Test]
     public void TestEmpty() {
         var sl = new SquareList<int>();
-        Assert.Multiple(() => {
-            Assert.That(sl.Min, Is.EqualTo(0));
-            Assert.That(sl.Max, Is.EqualTo(0));
-        });
+        using (Assert.EnterMultipleScope()) {
+            Assert.That(sl.Min, Is.Zero);
+            Assert.That(sl.Max, Is.Zero);
+        }
         var slref = new SquareList<SimpleComparable>();
-        Assert.Multiple(() => {
-            Assert.That(slref.Min, Is.EqualTo(null));
-            Assert.That(slref.Max, Is.EqualTo(null));
-        });
+        using (Assert.EnterMultipleScope()) {
+            Assert.That(slref.Min, Is.Null);
+            Assert.That(slref.Max, Is.Null);
+        }
     }
 
     private static readonly int[] _listWith_13_39_93 = [13, 39, 93];
@@ -140,12 +140,12 @@ public class UnitTestSquareList
         sl.Insert(13);
         sl.Insert(39);
         sl.Insert(93);
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(sl.Min, Is.EqualTo(13));
             Assert.That(sl.Max, Is.EqualTo(93));
             Assert.That(sl.Count(), Is.EqualTo(3));
             Assert.That(sl.SequenceEqual(_listWith_13_39_93));
-        });
+        }
         var slref = new SquareList<SimpleComparable>();
         var c1 = new SimpleComparable(13);
         var c2 = new SimpleComparable(39);
@@ -154,12 +154,12 @@ public class UnitTestSquareList
         slref.Insert(c1);
         slref.Insert(c2);
         slref.Insert(c3);
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(slref.Min, Is.SameAs(c3));
             Assert.That(slref.Max, Is.SameAs(c1));
             Assert.That(slref.Count(), Is.EqualTo(3));
             Assert.That(slref.SequenceEqual(expectedSequence));
-        });
+        }
     }
 
     [Test]
@@ -191,11 +191,11 @@ public class UnitTestSquareList
         sl.Insert(20);
         sl.Insert(21);
         sl.Insert(22);
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(sl.Min, Is.EqualTo(1));
             Assert.That(sl.Max, Is.EqualTo(100));
             Assert.That(sl.Size, Is.EqualTo(26));
-        });
+        }
     }
 
     [Test]
@@ -225,17 +225,17 @@ public class UnitTestSquareList
         sl.Insert(18);
         sl.Insert(19);
         sl.Insert(20);
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(sl.Min, Is.EqualTo(1));
             Assert.That(sl.Max, Is.EqualTo(100));
             Assert.That(sl.Size, Is.EqualTo(24));
-        });
+        }
         sl.Delete(100);
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(sl.Min, Is.EqualTo(1));
             Assert.That(sl.Max, Is.EqualTo(93));
             Assert.That(sl.Size, Is.EqualTo(23));
-        });
+        }
     }
 
     [Test]
@@ -250,21 +250,21 @@ public class UnitTestSquareList
         sl.Insert(7);
         sl.Insert(8);
         sl.Insert(9);
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(sl.Min, Is.EqualTo(1));
             Assert.That(sl.Max, Is.EqualTo(9));
             Assert.That(sl.Size, Is.EqualTo(9));
-        });
+        }
         sl.Delete(1);
         sl.Delete(2);
         sl.Delete(3);
         sl.Delete(4);
         sl.Delete(5);
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(sl.Min, Is.EqualTo(6));
             Assert.That(sl.Max, Is.EqualTo(9));
             Assert.That(sl.Size, Is.EqualTo(4));
-        });
+        }
     }
 
     [Test]
@@ -274,18 +274,18 @@ public class UnitTestSquareList
         sl.Insert(2);
         sl.Insert(3);
         sl.Insert(4);
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(sl.Min, Is.EqualTo(1));
             Assert.That(sl.Max, Is.EqualTo(4));
             Assert.That(sl.Size, Is.EqualTo(4));
-        });
+        }
         sl.Delete(1);
         sl.Delete(2);
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(sl.Min, Is.EqualTo(3));
             Assert.That(sl.Max, Is.EqualTo(4));
             Assert.That(sl.Size, Is.EqualTo(2));
-        });
+        }
     }
 
     [Test]
@@ -295,18 +295,18 @@ public class UnitTestSquareList
         sl.Insert(2);
         sl.Insert(3);
         sl.Insert(4);
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(sl.Min, Is.EqualTo(1));
             Assert.That(sl.Max, Is.EqualTo(4));
             Assert.That(sl.Size, Is.EqualTo(4));
-        });
+        }
         sl.Delete(3);
         sl.Delete(4);
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(sl.Min, Is.EqualTo(1));
             Assert.That(sl.Max, Is.EqualTo(2));
             Assert.That(sl.Size, Is.EqualTo(2));
-        });
+        }
     }
 
     [Test]
@@ -338,13 +338,13 @@ public class UnitTestSquareList
         sl.Insert(20);
         sl.Insert(21);
         sl.Insert(22);
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(sl.Min, Is.EqualTo(1));
             Assert.That(sl.Max, Is.EqualTo(100));
             Assert.That(sl.Size, Is.EqualTo(26));
             Assert.That(sl.Capacity, Is.EqualTo(30));
             Assert.That(sl.Ratio, Is.EqualTo(86));
-        });
+        }
         sl.Delete(2);
         sl.Delete(3);
         sl.Delete(4);
@@ -359,63 +359,63 @@ public class UnitTestSquareList
         sl.Delete(14);
         sl.Delete(15);
         sl.Delete(16);
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(sl.Min, Is.EqualTo(1));
             Assert.That(sl.Max, Is.EqualTo(100));
             Assert.That(sl.Size, Is.EqualTo(12));
             Assert.That(sl.Capacity, Is.EqualTo(30));
             Assert.That(sl.Ratio, Is.EqualTo(40));
-        });
+        }
         sl.ShrinkWithSlackOf(1);
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(sl.Min, Is.EqualTo(1));
             Assert.That(sl.Max, Is.EqualTo(100));
             Assert.That(sl.Size, Is.EqualTo(12));
             Assert.That(sl.Capacity, Is.EqualTo(30));
             Assert.That(sl.Ratio, Is.EqualTo(40));
-        });
+        }
         sl.ShrinkWithSlackOf(0);
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(sl.Min, Is.EqualTo(1));
             Assert.That(sl.Max, Is.EqualTo(100));
             Assert.That(sl.Size, Is.EqualTo(12));
             Assert.That(sl.Capacity, Is.EqualTo(20));
             Assert.That(sl.Ratio, Is.EqualTo(60));
-        });
+        }
     }
 
     [Test]
     public void TestSingle() {
         var sl = new SquareList<int>();
         sl.Insert(13);
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(sl.Min, Is.EqualTo(13));
             Assert.That(sl.Max, Is.EqualTo(13));
-        });
+        }
         var slref = new SquareList<SimpleComparable>();
         var c = new SimpleComparable(13);
         slref.Insert(c);
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(slref.Min, Is.SameAs(c));
             Assert.That(slref.Max, Is.SameAs(c));
-        });
+        }
     }
 
     [Test]
     public void TestSingleInsertAndDelete() {
         var sl = new SquareList<int>();
         sl.Insert(13);
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(sl.Min, Is.EqualTo(13));
             Assert.That(sl.Max, Is.EqualTo(13));
             Assert.That(sl.Size, Is.EqualTo(1));
-        });
+        }
         sl.Delete(13);
-        Assert.Multiple(() => {
-            Assert.That(sl.Min, Is.EqualTo(0));
-            Assert.That(sl.Max, Is.EqualTo(0));
-            Assert.That(sl.Size, Is.EqualTo(0));
-        });
+        using (Assert.EnterMultipleScope()) {
+            Assert.That(sl.Min, Is.Zero);
+            Assert.That(sl.Max, Is.Zero);
+            Assert.That(sl.Size, Is.Zero);
+        }
     }
 
     [Test]
@@ -424,10 +424,10 @@ public class UnitTestSquareList
         sl.Insert(13);
         sl.Insert(39);
         sl.Insert(93);
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(sl.Min, Is.EqualTo(13));
             Assert.That(sl.Max, Is.EqualTo(93));
-        });
+        }
         var slref = new SquareList<SimpleComparable>();
         var c1 = new SimpleComparable(13);
         var c2 = new SimpleComparable(39);
@@ -435,10 +435,10 @@ public class UnitTestSquareList
         slref.Insert(c1);
         slref.Insert(c2);
         slref.Insert(c3);
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(slref.Min, Is.SameAs(c3));
             Assert.That(slref.Max, Is.SameAs(c1));
-        });
+        }
     }
 
     [Test]
@@ -454,29 +454,29 @@ public class UnitTestSquareList
         sl.Insert(13);
         sl.Insert(13);
         sl.Insert(15);
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(sl.Min, Is.EqualTo(13));
             Assert.That(sl.Max, Is.EqualTo(15));
             Assert.That(sl.Size, Is.EqualTo(10));
-        });
+        }
         sl.Delete(13); // only the first;
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(sl.Min, Is.EqualTo(13));
             Assert.That(sl.Max, Is.EqualTo(15));
             Assert.That(sl.Size, Is.EqualTo(9));
-        });
+        }
         sl.Delete(13, true); // all remaining;
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(sl.Min, Is.EqualTo(15));
             Assert.That(sl.Max, Is.EqualTo(15));
             Assert.That(sl.Size, Is.EqualTo(1));
-        });
+        }
         sl.Delete(15, true); // all;
-        Assert.Multiple(() => {
-            Assert.That(sl.Min, Is.EqualTo(0));
-            Assert.That(sl.Max, Is.EqualTo(0));
-            Assert.That(sl.Size, Is.EqualTo(0));
-        });
+        using (Assert.EnterMultipleScope()) {
+            Assert.That(sl.Min, Is.Zero);
+            Assert.That(sl.Max, Is.Zero);
+            Assert.That(sl.Size, Is.Zero);
+        }
     }
 
     [Test]
@@ -492,17 +492,17 @@ public class UnitTestSquareList
         sl.Insert(13);
         sl.Insert(13);
         sl.Insert(15);
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(sl.Min, Is.EqualTo(13));
             Assert.That(sl.Max, Is.EqualTo(15));
             Assert.That(sl.Size, Is.EqualTo(10));
-        });
+        }
         sl.Delete(13, true); // all of them;
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(sl.Min, Is.EqualTo(15));
             Assert.That(sl.Max, Is.EqualTo(15));
             Assert.That(sl.Size, Is.EqualTo(1));
-        });
+        }
         sl.Insert(1);
         sl.Insert(2);
         sl.Insert(3);
@@ -517,11 +517,11 @@ public class UnitTestSquareList
         sl.Insert(12);
         sl.Insert(13);
         sl.Insert(14);
-        Assert.Multiple(() => {
+        using (Assert.EnterMultipleScope()) {
             Assert.That(sl.Min, Is.EqualTo(1));
             Assert.That(sl.Max, Is.EqualTo(15));
             Assert.That(sl.Size, Is.EqualTo(15));
-        });
+        }
     }
 
     private class SimpleComparable(int val) : IComparable

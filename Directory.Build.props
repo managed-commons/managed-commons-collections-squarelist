@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+      <LangVersion>preview</LangVersion>
+      <Version>1.1.2</Version>
+      <Copyright>Copyright © 2016-2026 Rafael 'Monoman' Teixeira</Copyright>
+      <Notes>
+          - Updated to .NET 10.0
+          - Updated test dependencies to latest versions.
+          - Better markdown headers for performance tests report.
+      </Notes>
+  </PropertyGroup>
+</Project>

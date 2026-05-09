@@ -1,6 +1,6 @@
 // ******************************************************************************************************************************
 // ****
-// ****      Copyright (c) 2016-2021 Rafael 'Monoman' Teixeira
+// ****      Copyright (c) 2016-2026 Rafael 'Monoman' Teixeira
 // ****
 // ******************************************************************************************************************************
 
@@ -17,18 +17,26 @@ namespace PerformanceTests
     public class Program
     {
         public const int SmallerRepetition = 1_000;
+        private static readonly string _runtime_version = $".NET {System.Environment.Version}";
+        private static readonly string _header = $"""
+                #Performance tests
 
-        public static void Main(string[] args) {
-            WriteLine("""
-                Performance tests
+                ## Version information
+                - Runtime: {_runtime_version}
+                - SortedList: {typeof(SortedList<,>).Assembly.GetName().Version.ToString(3)}
+                - SquareList: {typeof(SquareList<>).Assembly.GetName().Version.ToString(3)}
 
+                ## Times (all times in *ms*)
 
-                SortedList (all times in *ms*) [.NET 8.0]                                          SquareList (all times in *ms*) [.NET 8.0]
+                SortedList                                                                         SquareList 
                 ---                                                                                ---
 
                 |Initial Size| Creation |  Deletes | Inserts  |  Searchs |   Min    |   Max    |   |Initial Size| Creation |  Deletes | Inserts  | Reinserts|  Searchs |   Min    |   Max    | CutInHalf| Shrink   |
                 |-----------:|---------:|---------:|---------:|---------:|---------:|---------:|   |-----------:|---------:|---------:|---------:|---------:|---------:|---------:|---------:|---------:|---------:|
-                """);
+                """;
+
+        public static void Main(string[] args) {
+            WriteLine(_header);
             var multiplier = Math.Sqrt(Math.Sqrt(10d));
             for (double sizef = 1000d; sizef <= 50_000_000d; sizef *= multiplier) {
                 int size = (int)Math.Ceiling(sizef);

@@ -1,6 +1,6 @@
 // ******************************************************************************************************************************
 // ****
-// ****      Copyright (c) 2016-2021 Rafael 'Monoman' Teixeira
+// ****      Copyright (c) 2016-2026 Rafael 'Monoman' Teixeira
 // ****
 // ******************************************************************************************************************************
 
@@ -237,5 +237,5 @@ internal class VerticalLinkedList<T> : IEnumerable<T> where T : IComparable
         throw new ArgumentOutOfRangeException(nameof(value));
     }
 
-    public override string ToString() => GetType().FullName ?? nameof(VerticalLinkedList<T>);
+    public override string ToString() => GetType().FullName ?? nameof(VerticalLinkedList<>);
 }

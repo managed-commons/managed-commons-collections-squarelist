@@ -1,8 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <LangVersion>preview</LangVersion>
-        <TargetFrameworks>netstandard2.1;net8.0;net9.0</TargetFrameworks>
+        <TargetFrameworks>netstandard2.1;net8.0;net9.0;net10.0</TargetFrameworks>
         <AssemblyName>Commons.Collections.SquareList</AssemblyName>
         <OutputType>Library</OutputType>
         <RootNamespace>Commons.Collections</RootNamespace>
@@ -10,13 +9,14 @@
         <PackageProjectUrl>https://github.com/managed-commons</PackageProjectUrl>
         <RepositoryUrl>https://github.com/managed-commons/managed-commons-collections-squarelist</RepositoryUrl>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageReleaseNotes>Packaging for $(TargetFrameworks)</PackageReleaseNotes>
+        <PackageReleaseNotes>
+			- Packaging for $(TargetFrameworks)
+			$(Notes)
+		</PackageReleaseNotes>
         <Description>Managed Commons library for SquareList specialized collection.</Description>
-        <Copyright>Copyright © 2016-2024 Rafael 'Monoman' Teixeira</Copyright>
         <PackageTags>Collections Ordered</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <Version>1.1.1</Version>
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
         <AnalysisLevel>preview</AnalysisLevel>
