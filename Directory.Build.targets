@@ -1,7 +1,7 @@
 <Project>
     <Target Name="TagSources" />
 
-    <Target Name="NugetOrg" DependsOnTargets="Pack" Condition="'$(OS)' == 'Windows_NT' and '$(Configuration)'=='Release' and '$(IsPackable)'=='true'">
+    <Target Name="NugetOrg" DependsOnTargets="Pack" Condition="'$(OS)' == 'Windows_NT' and '$(Configuration)'=='Release' and '$(IsPackable)'=='true' and '$(OutputType)'=='Library'">
         <PropertyGroup>
             <LatestPackage>$(PackageId).$(Version).nupkg</LatestPackage>
             <PushCommand>dotnet nuget push $(PackageOutputAbsolutePath)$(LatestPackage) --skip-duplicate --force-english-output --source nuget.org</PushCommand>
