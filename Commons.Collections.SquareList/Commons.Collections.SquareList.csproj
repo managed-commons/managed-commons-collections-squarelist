@@ -21,6 +21,8 @@
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
         <AnalysisLevel>preview</AnalysisLevel>
         <ImplicitUsings>enable</ImplicitUsings>
+        <IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</IsAotCompatible>
+        <VerifyReferenceAotCompatibility Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net10.0'))">true</VerifyReferenceAotCompatibility>
     </PropertyGroup>
 
     <ItemGroup>

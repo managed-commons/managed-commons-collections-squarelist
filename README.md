@@ -19,7 +19,7 @@ The SquareList is a structure that is particularly useful in applications that f
 
 This implementation performs insert/delete/find operations within a worst-case running time of O(sqrt(n)) [In truth O(n) for inserts]. Values are always kept in ascending order, so traversing it in that order is natural and performant.
 
-__Commons.Collections.SquareList 1.1.5 is available at Nuget:__ [Commons.Collections.SquareList](https://www.nuget.org/packages/Commons.Collections.SquareList/).
+__Commons.Collections.SquareList 1.1.6 is available at Nuget:__ [Commons.Collections.SquareList](https://www.nuget.org/packages/Commons.Collections.SquareList/).
 
 ---
 ## Targets in the package
