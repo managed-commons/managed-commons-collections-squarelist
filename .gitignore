@@ -246,3 +246,6 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 /Commons.Collections.SquareList/lib/
+# bash generated helper files
+outdated.txt
+updated_nugets.txt
