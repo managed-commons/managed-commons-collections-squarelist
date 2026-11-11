@@ -5,7 +5,7 @@
 Managed Commons library containing the SquareList specialized collection.
 
 > [!NOTE]
-> **Now requires .NET 8.0/C# 12 to build**
+> **Now requires .NET 11.0/C# 15 to build**
 
 Loosely based on an [article](http://www.drdobbs.com/database/the-squarelist-data-structure/184405336) published in the May 2013 issue of Dr Dobb's Journal, by Mark Sams.
 
@@ -19,7 +19,7 @@ The SquareList is a structure that is particularly useful in applications that f
 
 This implementation performs insert/delete/find operations within a worst-case running time of O(sqrt(n)) [In truth O(n) for inserts]. Values are always kept in ascending order, so traversing it in that order is natural and performant.
 
-__Commons.Collections.SquareList 1.1.8 is available at Nuget:__ [Commons.Collections.SquareList](https://www.nuget.org/packages/Commons.Collections.SquareList/).
+__Commons.Collections.SquareList 1.1.9 is available at Nuget:__ [Commons.Collections.SquareList](https://www.nuget.org/packages/Commons.Collections.SquareList/).
 
 ---
 ## Targets in the package

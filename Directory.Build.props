@@ -1,12 +1,12 @@
 <Project>
   <PropertyGroup>
       <LangVersion>preview</LangVersion>
-      <Version>1.1.8</Version>
+      <Version>1.1.9</Version>
       <Copyright>Copyright © 2016-2026 Rafael 'Monoman' Teixeira</Copyright>
       <Notes>
+          - Update Target Frameworks to include .NET 11.0
           - Update Testing Dependencies
-          + Microsoft.NET.Test.Sdk "18.10.1" -> "18.11.0"
-          + NUnit3TestAdapter "6.3.0" -> "6.3.1"
+          + Microsoft.NET.Test.Sdk  18.11.0 -> 18.12.0
       </Notes>
   </PropertyGroup>
 </Project>
